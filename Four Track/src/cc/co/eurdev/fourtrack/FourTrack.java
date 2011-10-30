@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.Window;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import cc.co.eurdev.fourtrack.widget.VerticalSeekBar;
@@ -18,6 +19,8 @@ public class FourTrack extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         
         layout = (LinearLayout)findViewById(R.id.volumeControls);
         params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.FILL_PARENT, 1f);

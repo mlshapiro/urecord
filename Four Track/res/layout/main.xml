@@ -4,23 +4,22 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:weightSum="1">
-    <LinearLayout android:id="@+id/trackLabels" android:layout_width="match_parent" android:layout_height="wrap_content">
+    <LinearLayout android:id="@+id/trackLabels" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp">
         <TextView android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:text="1" android:id="@+id/textView01" android:layout_weight="1" android:layout_width="0dp" android:gravity="center_horizontal"></TextView>
         <TextView android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:text="2" android:id="@+id/textView02" android:layout_width="0dp" android:layout_weight="1" android:gravity="center_horizontal"></TextView>
         <TextView android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:text="3" android:id="@+id/textView03" android:layout_width="0dp" android:layout_weight="1" android:gravity="center_horizontal"></TextView>
         <TextView android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:text="4" android:id="@+id/textView04" android:layout_width="0dp" android:layout_weight="1" android:gravity="center_horizontal"></TextView>
     </LinearLayout>
-    <LinearLayout android:layout_width="match_parent" android:id="@+id/volumeControls" android:layout_height="wrap_content" android:layout_weight="1"></LinearLayout>
-    <LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayout01" android:layout_width="match_parent" android:layout_weight="1">
+    <LinearLayout android:layout_width="match_parent" android:id="@+id/volumeControls" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginBottom="16dp" android:layout_marginTop="10dp"></LinearLayout>
+    <LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayout01" android:layout_width="match_parent" android:layout_weight="1" android:layout_marginBottom="10dp">
         <ToggleButton android:text="ToggleButton" android:layout_height="wrap_content" android:gravity="center_horizontal" android:id="@+id/toggleButton01" android:layout_width="wrap_content" android:layout_weight="1"></ToggleButton>
         <ToggleButton android:text="ToggleButton" android:layout_height="wrap_content" android:gravity="center_horizontal" android:id="@+id/toggleButton02" android:layout_width="wrap_content" android:layout_weight="1"></ToggleButton>
         <ToggleButton android:text="ToggleButton" android:layout_height="wrap_content" android:gravity="center_horizontal" android:id="@+id/toggleButton03" android:layout_width="wrap_content" android:layout_weight="1"></ToggleButton>
         <ToggleButton android:text="ToggleButton" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_weight="1" android:gravity="center_horizontal" android:id="@+id/toggleButton04"></ToggleButton>
     </LinearLayout>
-    <LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayout02" android:layout_width="match_parent" android:layout_weight="1" android:paddingTop="20dp" android:paddingBottom="5dp">
-        <Button android:layout_height="wrap_content" android:text="&lt;&lt;" android:id="@+id/buttonRewind" android:layout_width="wrap_content"></Button>
-        <Button android:layout_height="wrap_content" android:text="O" android:id="@+id/buttonRecord" android:layout_width="wrap_content"></Button>
-        <Button android:layout_height="wrap_content" android:text="&gt;" android:id="@+id/buttonPlay" android:layout_width="wrap_content"></Button>
+    <LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayout02" android:layout_width="match_parent" android:layout_weight="1" android:paddingTop="20dp" android:paddingBottom="5dp" android:padding="10dp">
+        <Button android:layout_height="wrap_content" android:background="@drawable/record" android:layout_width="wrap_content" android:layout_marginRight="5dp" android:id="@+id/buttonRecord"></Button>
+        <Button android:layout_height="wrap_content" android:background="@drawable/play" android:id="@+id/buttonPlay" android:layout_width="wrap_content" android:layout_marginRight="5dp"></Button>
         <SeekBar android:layout_height="wrap_content" android:id="@+id/seekBar1" android:layout_weight="1" android:layout_width="match_parent" android:layout_gravity="center"></SeekBar>
     </LinearLayout>
 </LinearLayout>
