@@ -3,9 +3,12 @@ package cc.co.eurdev.fourtrack;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
-import android.view.Window;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import cc.co.eurdev.fourtrack.widget.VerticalSeekBar;
 
@@ -14,6 +17,7 @@ public class FourTrack extends Activity {
 	
 	LinearLayout layout;
 	LinearLayout.LayoutParams params;
+	AudioRecorder ar = AudioRecorder.getInstance(false);
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,5 +51,33 @@ public class FourTrack extends Activity {
         layout.addView(verticalSeekBar2, params);
         layout.addView(verticalSeekBar3, params);
         layout.addView(verticalSeekBar4, params);
+        
+        Button recordButton = (Button)findViewById(R.id.buttonRecord);
+        Button playButton = (Button)findViewById(R.id.buttonPlay);
+        
+        recordButton.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		
+        		try {
+        			ar.setOutputFile("/sdcard/tebAudio.wav");
+        			ar.prepare();
+        			ar.start();
+        		} catch (Exception e) {
+        			Log.e("record: ", e.getMessage());
+        		}
+        		
+        	}
+        });
+        
+        playButton.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+        		
+        		ar.stop();
+        		ar.release();
+        		
+        	}
+        });
+        
+        
     }
 }

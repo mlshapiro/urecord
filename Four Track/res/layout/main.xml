@@ -18,8 +18,8 @@
         <ToggleButton android:text="ToggleButton" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_weight="1" android:gravity="center_horizontal" android:id="@+id/toggleButton04"></ToggleButton>
     </LinearLayout>
     <LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayout02" android:layout_width="match_parent" android:layout_weight="1" android:paddingTop="20dp" android:paddingBottom="5dp" android:padding="10dp">
-        <Button android:layout_height="wrap_content" android:background="@drawable/record" android:layout_width="wrap_content" android:layout_marginRight="5dp" android:id="@+id/buttonRecord"></Button>
-        <Button android:layout_height="wrap_content" android:background="@drawable/play" android:id="@+id/buttonPlay" android:layout_width="wrap_content" android:layout_marginRight="5dp"></Button>
+        <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_marginRight="5dp" android:id="@+id/buttonRecord" android:text="rec"></Button>
+        <Button android:layout_height="wrap_content" android:id="@+id/buttonPlay" android:layout_width="wrap_content" android:layout_marginRight="5dp" android:text="play"></Button>
         <SeekBar android:layout_height="wrap_content" android:id="@+id/seekBar1" android:layout_weight="1" android:layout_width="match_parent" android:layout_gravity="center"></SeekBar>
     </LinearLayout>
 </LinearLayout>
