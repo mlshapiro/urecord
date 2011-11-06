@@ -26,7 +26,7 @@ public class FourTrack extends Activity {
 	boolean sdIsMounted;
 	LinearLayout layout;
 	LinearLayout.LayoutParams params;
-	AudioRecorder ar = AudioRecorder.getInstance(false);
+	AudioRecorder ar;
 	HashMap<Integer, String> trackMap = new HashMap<Integer, String>(4);
 	
 	
@@ -87,6 +87,7 @@ public class FourTrack extends Activity {
         recordButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		
+        		ar = AudioRecorder.getInstance(false);
         		String track = trackMap.get(radioGroup.getCheckedRadioButtonId());
         		
         		try {
