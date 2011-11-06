@@ -17,9 +17,17 @@
         <ToggleButton android:text="ToggleButton" android:layout_height="wrap_content" android:gravity="center_horizontal" android:id="@+id/toggleButton03" android:layout_width="wrap_content" android:layout_weight="1"></ToggleButton>
         <ToggleButton android:text="ToggleButton" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_weight="1" android:gravity="center_horizontal" android:id="@+id/toggleButton04"></ToggleButton>
     </LinearLayout>
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1" android:id="@+id/LinearLayout03" android:layout_marginBottom="10dp">
+        <RadioGroup android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/radioGroup1" android:orientation="horizontal" android:layout_weight="1" android:layout_gravity="center_horizontal">
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rec" android:id="@+id/radio0" android:layout_weight="1" android:checked="true" android:gravity="center_horizontal"></RadioButton>
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rec" android:id="@+id/radio1" android:layout_weight="1" android:gravity="center_horizontal"></RadioButton>
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rec" android:id="@+id/radio2" android:layout_weight="1" android:gravity="center_horizontal"></RadioButton>
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rec" android:id="@+id/radio3" android:layout_weight="1" android:gravity="center_horizontal"></RadioButton>
+        </RadioGroup>
+    </LinearLayout>
     <LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayout02" android:layout_width="match_parent" android:layout_weight="1" android:paddingTop="20dp" android:paddingBottom="5dp" android:padding="10dp">
-        <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_marginRight="5dp" android:id="@+id/buttonRecord" android:text="rec"></Button>
-        <Button android:layout_height="wrap_content" android:id="@+id/buttonPlay" android:layout_width="wrap_content" android:layout_marginRight="5dp" android:text="play"></Button>
+        <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_marginRight="5dp" android:id="@+id/buttonRecord" android:text="rec" android:width="60dp" android:height="60dp"></Button>
+        <Button android:layout_height="wrap_content" android:id="@+id/buttonPlay" android:layout_width="wrap_content" android:layout_marginRight="5dp" android:text="play" android:width="60dp" android:height="60dp"></Button>
         <SeekBar android:layout_height="wrap_content" android:id="@+id/seekBar1" android:layout_weight="1" android:layout_width="match_parent" android:layout_gravity="center"></SeekBar>
     </LinearLayout>
 </LinearLayout>

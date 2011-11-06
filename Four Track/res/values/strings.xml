@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, FourTrack!</string>
     <string name="app_name">Four Track Recorder</string>
+    <string name="package_name">cc.co.eurdev.fourtrack</string>
 </resources>
