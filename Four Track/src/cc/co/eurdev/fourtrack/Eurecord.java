@@ -19,7 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 import cc.co.eurdev.fourtrack.widget.VerticalSeekBar;
 
-public class FourTrack extends Activity {
+public class Eurecord extends Activity {
     /** Called when the activity is first created. */
 	
 	String trackPath;
@@ -82,7 +82,7 @@ public class FourTrack extends Activity {
         final RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup1);
         
         prepareResources();
-        Toast.makeText(FourTrack.this, "Free space: " + (int)freeSpace() + "MB", Toast.LENGTH_LONG).show();
+        Toast.makeText(Eurecord.this, "Free space: " + (int)freeSpace() + "MB", Toast.LENGTH_LONG).show();
         
         recordButton.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
@@ -94,7 +94,7 @@ public class FourTrack extends Activity {
         			ar.setOutputFile(trackPath + track);
         			ar.prepare();
         			ar.start();
-        			Toast.makeText(FourTrack.this, "Recording", Toast.LENGTH_LONG).show();
+        			Toast.makeText(Eurecord.this, "Recording", Toast.LENGTH_LONG).show();
         		} catch (Exception e) {
         			Log.e("record: ", e.getMessage());
         		}
@@ -107,7 +107,7 @@ public class FourTrack extends Activity {
         		
         		ar.stop();
         		ar.release();
-        		Toast.makeText(FourTrack.this, "Free space: " + (int)freeSpace() + "MB", Toast.LENGTH_LONG).show();
+        		Toast.makeText(Eurecord.this, "Free space: " + (int)freeSpace() + "MB", Toast.LENGTH_LONG).show();
         		
         	}
         });
