@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, FourTrack!</string>
-    <string name="app_name">Four Track Recorder</string>
-    <string name="package_name">cc.co.eurdev.fourtrack</string>
+    <string name="app_name">Eurecord</string>
+    <string name="package_name">cc.co.eurdev.eurecord</string>
+    <string name="sample_rate">Sample rate:</string>
+    <string-array name="sample_rate_array">
+    	<item>44,100</item>
+    	<item>22,050</item>
+    	<item>16,000</item>
+    	<item>11,025</item>
+    	<item>8,000</item>
+    </string-array>
 </resources>

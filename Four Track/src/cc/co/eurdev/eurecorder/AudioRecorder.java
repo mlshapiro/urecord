@@ -1,4 +1,4 @@
-package cc.co.eurdev.fourtrack;
+package cc.co.eurdev.eurecorder;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,23 +11,15 @@ import android.media.MediaRecorder.AudioSource;
 import android.util.Log;
 
 public class AudioRecorder {
-	private final static int[] sampleRates = { 44100, 22050, 11025, 8000 };
-
-	public static AudioRecorder getInstance(Boolean recordingCompressed) {
+	public static AudioRecorder getInstance(int sampleRate) {
 		AudioRecorder result = null;
 
-		if (recordingCompressed) {
-			result = new AudioRecorder(false, AudioSource.MIC, sampleRates[3],
+		if (sampleRate == 8000) {
+			result = new AudioRecorder(false, AudioSource.MIC, sampleRate,
 					AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
 		} else {
-			int i = 0;
-			do {
-				result = new AudioRecorder(true, AudioSource.MIC,
-						sampleRates[i], AudioFormat.CHANNEL_IN_MONO,
-						AudioFormat.ENCODING_PCM_16BIT);
-
-			} while ((++i < sampleRates.length)
-					& !(result.getState() == AudioRecorder.State.INITIALIZING));
+			result = new AudioRecorder(true, AudioSource.MIC, sampleRate, 
+					AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
 		}
 		return result;
 	}

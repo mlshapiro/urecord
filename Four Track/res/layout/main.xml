@@ -1,33 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:weightSum="1">
-    <LinearLayout android:id="@+id/trackLabels" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp">
-        <TextView android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:text="1" android:id="@+id/textView01" android:layout_weight="1" android:layout_width="0dp" android:gravity="center_horizontal"></TextView>
-        <TextView android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:text="2" android:id="@+id/textView02" android:layout_width="0dp" android:layout_weight="1" android:gravity="center_horizontal"></TextView>
-        <TextView android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:text="3" android:id="@+id/textView03" android:layout_width="0dp" android:layout_weight="1" android:gravity="center_horizontal"></TextView>
-        <TextView android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceSmall" android:text="4" android:id="@+id/textView04" android:layout_width="0dp" android:layout_weight="1" android:gravity="center_horizontal"></TextView>
-    </LinearLayout>
-    <LinearLayout android:layout_width="match_parent" android:id="@+id/volumeControls" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginBottom="16dp" android:layout_marginTop="10dp"></LinearLayout>
-    <LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayout01" android:layout_width="match_parent" android:layout_weight="1" android:layout_marginBottom="10dp">
-        <ToggleButton android:text="ToggleButton" android:layout_height="wrap_content" android:gravity="center_horizontal" android:id="@+id/toggleButton01" android:layout_width="wrap_content" android:layout_weight="1"></ToggleButton>
-        <ToggleButton android:text="ToggleButton" android:layout_height="wrap_content" android:gravity="center_horizontal" android:id="@+id/toggleButton02" android:layout_width="wrap_content" android:layout_weight="1"></ToggleButton>
-        <ToggleButton android:text="ToggleButton" android:layout_height="wrap_content" android:gravity="center_horizontal" android:id="@+id/toggleButton03" android:layout_width="wrap_content" android:layout_weight="1"></ToggleButton>
-        <ToggleButton android:text="ToggleButton" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_weight="1" android:gravity="center_horizontal" android:id="@+id/toggleButton04"></ToggleButton>
-    </LinearLayout>
-    <LinearLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_weight="1" android:id="@+id/LinearLayout03" android:layout_marginBottom="10dp">
-        <RadioGroup android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/radioGroup1" android:orientation="horizontal" android:layout_weight="1" android:layout_gravity="center_horizontal">
-            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rec" android:id="@+id/radio0" android:layout_weight="1" android:checked="true" android:gravity="center_horizontal"></RadioButton>
-            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rec" android:id="@+id/radio1" android:layout_weight="1" android:gravity="center_horizontal"></RadioButton>
-            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rec" android:id="@+id/radio2" android:layout_weight="1" android:gravity="center_horizontal"></RadioButton>
-            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rec" android:id="@+id/radio3" android:layout_weight="1" android:gravity="center_horizontal"></RadioButton>
-        </RadioGroup>
-    </LinearLayout>
-    <LinearLayout android:layout_height="wrap_content" android:id="@+id/LinearLayout02" android:layout_width="match_parent" android:layout_weight="1" android:paddingTop="20dp" android:paddingBottom="5dp" android:padding="10dp">
-        <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_marginRight="5dp" android:id="@+id/buttonRecord" android:text="rec" android:width="60dp" android:height="60dp"></Button>
-        <Button android:layout_height="wrap_content" android:id="@+id/buttonPlay" android:layout_width="wrap_content" android:layout_marginRight="5dp" android:text="play" android:width="60dp" android:height="60dp"></Button>
-        <SeekBar android:layout_height="wrap_content" android:id="@+id/seekBar1" android:layout_weight="1" android:layout_width="match_parent" android:layout_gravity="center"></SeekBar>
-    </LinearLayout>
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:weightSum="1">
+	<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:layout_marginTop="10dp" android:id="@+id/label">
+		<TextView android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:text="SD free space" android:layout_weight="1" android:layout_width="0dip" android:gravity="right" android:id="@+id/textFreeSpace" android:paddingRight="5dip"></TextView>
+	</LinearLayout>
+	<LinearLayout android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:id="@+id/LinearLayout04" android:layout_marginBottom="0dip" android:layout_marginTop="20dip" android:paddingLeft="25dip" android:paddingRight="20dip">
+		<TextView android:id="@+id/textView1" android:text="@string/sample_rate" android:layout_height="wrap_content" android:layout_width="wrap_content"></TextView>
+	</LinearLayout>
+	<LinearLayout android:layout_height="wrap_content"
+		android:layout_width="match_parent"
+		android:id="@+id/LinearLayout03" android:layout_marginBottom="10dip" android:layout_marginTop="4dip" android:paddingLeft="20dip" android:paddingRight="20dip">
+		<Spinner android:id="@+id/spinner1" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:layout_weight="1"></Spinner>
+		<ToggleButton android:id="@+id/toggleRecord" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="ToggleButton"></ToggleButton>
+	</LinearLayout>
+	<LinearLayout android:layout_height="wrap_content"
+		android:id="@+id/LinearLayout02" android:layout_width="match_parent"
+		android:layout_weight="1" android:paddingTop="20dip"
+		android:paddingBottom="5dip" android:padding="10dip">
+		<ListView android:id="@+id/listView1" android:layout_height="wrap_content" android:layout_weight="1" android:layout_width="match_parent"></ListView>
+	</LinearLayout>
 </LinearLayout>

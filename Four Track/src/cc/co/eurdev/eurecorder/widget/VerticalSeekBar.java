@@ -1,4 +1,4 @@
-package cc.co.eurdev.fourtrack.widget;
+package cc.co.eurdev.eurecorder.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
