@@ -18,7 +18,7 @@
 		android:id="@+id/LinearLayout03" android:layout_marginBottom="10dip" android:layout_marginTop="4dip" android:paddingLeft="20dip" android:paddingRight="20dip">
 		<Spinner android:id="@+id/spinner1" android:layout_height="wrap_content"
 			android:layout_width="wrap_content" android:layout_weight="1"></Spinner>
-		<ToggleButton android:id="@+id/toggleRecord" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="ToggleButton"></ToggleButton>
+		<ToggleButton android:id="@+id/toggleRecord" android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="ToggleButton" android:textOn="Stop" android:textOff="Record"></ToggleButton>
 	</LinearLayout>
 	<LinearLayout android:layout_height="wrap_content"
 		android:id="@+id/LinearLayout02" android:layout_width="match_parent"

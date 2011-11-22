@@ -38,12 +38,12 @@ public class Eurecord extends Activity {
         freeSpaceView = (TextView)findViewById(R.id.textFreeSpace);
         
         final ToggleButton toggleRecord = (ToggleButton) findViewById(R.id.toggleRecord);
-        toggleRecord.setText("Record");
         
         final Spinner sampleRateSpinner = (Spinner) findViewById(R.id.spinner1);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
         		this, R.array.sample_rate_array, android.R.layout.simple_spinner_dropdown_item);
         sampleRateSpinner.setAdapter(spinnerAdapter);
+        sampleRateSpinner.setSelection(2);
 
         prepareResources();
         //Toast.makeText(Eurecord.this, "Free space: " + (int)freeSpace() + "MB", Toast.LENGTH_LONG).show();
