@@ -2,9 +2,11 @@ package cc.co.eurdev.eurecorder;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.Calendar;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
@@ -34,6 +36,7 @@ public class Eurecord extends Activity {
     Spinner sampleRateSpinner;
     TextView listItem;
     ListView listView;
+    private MediaPlayer mediaPlayer = new MediaPlayer();
 	
 	
 	
@@ -64,8 +67,18 @@ public class Eurecord extends Activity {
         listView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view,
         			int position, long id) {
-        		Toast.makeText(getApplicationContext(), ((TextView) view).getText(), 
-        				Toast.LENGTH_SHORT).show();
+        		String fullpath = trackPath + ((TextView) view).getText().toString();
+        		try {
+        			mediaPlayer.reset();
+        			mediaPlayer.setDataSource(fullpath);
+        			mediaPlayer.prepare();
+        			mediaPlayer.start();
+        			Toast.makeText(getApplicationContext(), "Playing: " + ((TextView) view).getText(), 
+            				Toast.LENGTH_SHORT).show();
+        		} catch (IOException e) {
+        			Log.v(getString(R.string.app_name), e.getMessage());
+        		}
+        		
         	}
         });
 
