@@ -139,6 +139,29 @@ public class Eurecord extends Activity {
     	prepareResources();
     }
     
+    @Override
+    public void onPause() {
+    	super.onPause();
+    	Log.i("onPause", "onPause() called");
+    	
+    	if (mediaPlayer.isPlaying()) {
+    		mediaPlayer.stop();
+    		mediaPlayer.release();
+    	}
+    }
+    
+    @Override
+    public void onStop() {
+    	super.onStop();
+    	Log.i("onStop", "onStop() called");
+    }
+    
+    @Override
+    public void onDestroy() {
+    	super.onDestroy();
+    	Log.i("onDestroy", "onDestroy() called");
+    }
+    
     public void prepareResources() {
     	
     	if (sdIsMounted) {
