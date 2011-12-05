@@ -16,6 +16,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <activity android:name="cc.co.eurdev.eurecorder.AudioPlayer"
+       		android:theme="@style/floatingWindow"></activity>
 
     </application>
 </manifest>

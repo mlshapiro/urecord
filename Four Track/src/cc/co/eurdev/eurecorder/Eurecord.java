@@ -2,13 +2,18 @@ package cc.co.eurdev.eurecorder;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.media.AudioFormat;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder.AudioSource;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.StatFs;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +30,7 @@ import android.widget.ToggleButton;
 
 public class Eurecord extends Activity {
     /** Called when the activity is first created. */
+	
 	
 	String trackPath;
 	boolean sdIsMounted;
@@ -34,9 +41,10 @@ public class Eurecord extends Activity {
 	String[] files;
 	ToggleButton toggleRecord;
     Spinner sampleRateSpinner;
+    SeekBar seekBar;
     TextView listItem;
     ListView listView;
-    private MediaPlayer mediaPlayer = new MediaPlayer();
+    HashMap<String, String> filesMap;
 	
 	
 	
@@ -53,6 +61,8 @@ public class Eurecord extends Activity {
         
         toggleRecord = (ToggleButton) findViewById(R.id.toggleRecord); 
         sampleRateSpinner = (Spinner) findViewById(R.id.spinner1);
+        
+        
         listItem = (TextView) findViewById(R.id.textListItem);
         listView = (ListView) findViewById(R.id.listView1);
         
@@ -67,22 +77,14 @@ public class Eurecord extends Activity {
         listView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
         	public void onItemClick(AdapterView<?> parent, View view,
         			int position, long id) {
-        		String fullpath = trackPath + ((TextView) view).getText().toString();
-        		try {
-        			mediaPlayer.reset();
-        			mediaPlayer.setDataSource(fullpath);
-        			mediaPlayer.prepare();
-        			mediaPlayer.start();
-        			Toast.makeText(getApplicationContext(), "Playing: " + ((TextView) view).getText(), 
-            				Toast.LENGTH_SHORT).show();
-        		} catch (IOException e) {
-        			Log.v(getString(R.string.app_name), e.getMessage());
-        		}
         		
+        		String fullPath = trackPath + filesMap.get(((TextView) view).getText().toString());
+        		showAudioPlayer(fullPath);
+        		Toast.makeText(getApplicationContext(), "Playing: " + ((TextView) view).getText(), 
+            				Toast.LENGTH_SHORT).show();
         	}
         });
 
-        
         toggleRecord.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		
@@ -111,7 +113,14 @@ public class Eurecord extends Activity {
             			
             		//Toast.makeText(Eurecord.this, trackPath+track+ " "+ sampleRate, Toast.LENGTH_LONG).show();
 
-            		ar = AudioRecorder.getInstance(sampleRate);
+            		if (sampleRate == 8000) {
+            			ar = new AudioRecorder(false, AudioSource.MIC, sampleRate,
+            					AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
+            		} else {
+            			ar = new AudioRecorder(true, AudioSource.MIC, sampleRate, 
+            					AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
+            		}
+            		
             		try {
             			ar.setOutputFile(trackPath + track);
             			ar.prepare();
@@ -143,23 +152,24 @@ public class Eurecord extends Activity {
     public void onPause() {
     	super.onPause();
     	Log.i("onPause", "onPause() called");
-    	
-    	if (mediaPlayer.isPlaying()) {
-    		mediaPlayer.stop();
-    		mediaPlayer.release();
-    	}
     }
     
     @Override
     public void onStop() {
     	super.onStop();
-    	Log.i("onStop", "onStop() called");
     }
     
     @Override
     public void onDestroy() {
     	super.onDestroy();
     	Log.i("onDestroy", "onDestroy() called");
+    }
+    
+    public void showAudioPlayer(String fullPath) {
+    	Intent intent = new Intent(this, AudioPlayer.class);
+    	intent.putExtra("AUDIO_FILE_PATH", fullPath);
+    	startActivity(intent);
+    	
     }
     
     public void prepareResources() {
@@ -174,10 +184,31 @@ public class Eurecord extends Activity {
     		};
     		File dir = new File(trackPath);
     		files = dir.list(filter);
-    		listView.setAdapter(new ArrayAdapter<String>(this, R.layout.list_item, files));
+    		filesMap = new HashMap<String, String>();
+    		
+    		for (int i = 0; i < files.length; i++) {
+    			filesMap.put(parseAudioFile(files[i]), files[i]);
+    		}
+    		//String tmp[] = filesMap.keySet().toArray(new String[0]);
+    		
+    		listView.setAdapter(new ArrayAdapter<String>(this, R.layout.list_item, filesMap.keySet().toArray(new String[0])));
     		
     		
     	}
+    }
+    
+    public String parseAudioFile(String input) {
+    	String tmp = input.substring(9, input.length()-4);
+    	StringTokenizer tokens = new StringTokenizer(tmp, "-.");
+    	StringBuilder result = new StringBuilder();
+    	
+    	while (tokens.hasMoreTokens()) {
+    		result.append(tokens.nextToken());
+    		if (tokens.hasMoreTokens()) {
+    			result.append(" ");
+    		}
+    	}
+    	return result.toString();
     }
     
     public double freeSpace() {

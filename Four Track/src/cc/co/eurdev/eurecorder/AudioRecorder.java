@@ -7,28 +7,11 @@ import java.io.RandomAccessFile;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.media.MediaRecorder.AudioSource;
 import android.util.Log;
 
 public class AudioRecorder {
-	public static AudioRecorder getInstance(int sampleRate) {
-		AudioRecorder result = null;
+	
 
-		if (sampleRate == 8000) {
-			result = new AudioRecorder(false, AudioSource.MIC, sampleRate,
-					AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
-		} else {
-			result = new AudioRecorder(true, AudioSource.MIC, sampleRate, 
-					AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
-		}
-		return result;
-	}
-
-	/**
-	 * INITIALIZING : recorder is initializing; READY : recorder has been
-	 * initialized, recorder not yet started RECORDING : recording ERROR :
-	 * reconstruction needed STOPPED: reset needed
-	 */
 	public enum State {
 		INITIALIZING, READY, RECORDING, ERROR, STOPPED
 	};
