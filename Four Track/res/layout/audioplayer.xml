@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/layout_root"
-  android:orientation="horizontal"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:padding="10dp">
-    <LinearLayout android:id="@+id/linearLayout1" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-        <SeekBar android:layout_height="wrap_content" android:id="@+id/seekBar" android:layout_width="200dip"></SeekBar>
-        <ToggleButton android:text="ToggleButton" android:id="@+id/toggleButton1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="right"></ToggleButton>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:padding="10dp" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="200dip"
+            android:layout_height="wrap_content" >
+        </SeekBar>
+
+        <ToggleButton
+            android:id="@+id/toggleButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="ToggleButton" >
+        </ToggleButton>
     </LinearLayout>
-    
+
 </LinearLayout>
