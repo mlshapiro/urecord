@@ -2,18 +2,19 @@ package cc.co.eurdev.eurecorder;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.media.AudioFormat;
-import android.media.MediaPlayer;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.StatFs;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +31,22 @@ import android.widget.ToggleButton;
 
 public class Eurecord extends Activity {
     /** Called when the activity is first created. */
+	
+	private static final Map<Integer, String> monthMap =
+			Collections.unmodifiableMap(new HashMap<Integer, String>() {{
+				put(1, "Jan");
+				put(2, "Feb");
+				put(3, "Mar");
+				put(4, "Apr");
+				put(5, "May");
+				put(6, "Jun");
+				put(7, "Jul");
+				put(8, "Aug");
+				put(9, "Sep");
+				put(10, "Oct");
+				put(11, "Nov");
+				put(12, "Dec");
+			}});
 	
 	
 	String trackPath;
@@ -184,6 +201,7 @@ public class Eurecord extends Activity {
     		};
     		File dir = new File(trackPath);
     		files = dir.list(filter);
+    		Arrays.sort(files);
     		filesMap = new HashMap<String, String>();
     		
     		for (int i = 0; i < files.length; i++) {
@@ -202,12 +220,23 @@ public class Eurecord extends Activity {
     	StringTokenizer tokens = new StringTokenizer(tmp, "-.");
     	StringBuilder result = new StringBuilder();
     	
+    	int i = 0;
     	while (tokens.hasMoreTokens()) {
-    		result.append(tokens.nextToken());
-    		if (tokens.hasMoreTokens()) {
-    			result.append(" ");
+    		if (i == 1) {
+    			result.append(monthMap.get(Integer.parseInt(tokens.nextToken())));
+    		} else {
+    			result.append(tokens.nextToken());
     		}
+    		
+    		if (tokens.hasMoreTokens() && i <= 2) {
+    			result.append(" ");
+    		} else if (tokens.hasMoreTokens() && i > 2) {
+    			result.append(":");
+    		}
+    		i++;
     	}
+    	
+    	
     	return result.toString();
     }
     
