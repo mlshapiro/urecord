@@ -17,15 +17,41 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="listItem">
+    <style name="listItemDate">
         <item name="android:background">#D5D5D5</item>
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingLeft">2dp</item>
         <item name="android:paddingTop">15dp</item>
         <item name="android:paddingBottom">5dp</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle"></item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:typeface">sans</item>
+    </style>
+    
+    <style name="listItemLength">
+        <item name="android:background">#D5D5D5</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:paddingTop">15dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:typeface">sans</item>
+    </style>
+    
+    <style name="listItemTime">
+        <item name="android:background">#D5D5D5</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:paddingTop">15dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">italic</item>
         <item name="android:textColor">#000000</item>
         <item name="android:typeface">sans</item>
     </style>

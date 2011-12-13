@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/textListItem"
-    style="@style/listItem">
-    
-</TextView>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+        
+        <TextView
+            android:id="@+id/textTimeStamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/textDate"
+            style="@style/listItemDate"
+            android:layout_width="wrap_content"
+            android:text="hello" />
+
+        <TextView
+            android:id="@+id/textLength"
+            style="@style/listItemLength"
+            android:layout_width="match_parent"
+            android:gravity="right"
+            android:text="hello" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textTime"
+        style="@style/listItemTime"
+        android:layout_width="match_parent"
+        android:text="hello" />
+
+</LinearLayout>

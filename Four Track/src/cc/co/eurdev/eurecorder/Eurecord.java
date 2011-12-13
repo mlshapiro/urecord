@@ -2,16 +2,21 @@ package cc.co.eurdev.eurecorder;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.media.AudioFormat;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder.AudioSource;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,16 +27,24 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SeekBar;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+import cc.co.eurdev.eurecorder.db.DBAdapter;
 
 public class Eurecord extends Activity {
     /** Called when the activity is first created. */
 	
+	private DBAdapter db = new DBAdapter(this);
+	
+	String[] from = new String[] {"TimeStamp", "Date", "Length", "Time"};
+    int[] to;
+    
 	private static final Map<Integer, String> monthMap =
 			Collections.unmodifiableMap(new HashMap<Integer, String>() {{
 				put(1, "Jan");
@@ -61,7 +74,7 @@ public class Eurecord extends Activity {
     SeekBar seekBar;
     TextView listItem;
     ListView listView;
-    HashMap<String, String> filesMap;
+    HashMap<Long, String> filesMap;
 	
 	
 	
@@ -73,14 +86,14 @@ public class Eurecord extends Activity {
         sdIsMounted = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
         trackPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/";
         
-        
+        to = new int[] {R.id.textTimeStamp, R.id.textDate, R.id.textLength, R.id.textTime};
         freeSpaceView = (TextView)findViewById(R.id.textFreeSpace);
         
         toggleRecord = (ToggleButton) findViewById(R.id.toggleRecord); 
         sampleRateSpinner = (Spinner) findViewById(R.id.spinner1);
         
         
-        listItem = (TextView) findViewById(R.id.textListItem);
+        //listItem = (TextView) findViewById(R.id.textListItem);
         listView = (ListView) findViewById(R.id.listView1);
         
         listView.setTextFilterEnabled(true);
@@ -95,9 +108,27 @@ public class Eurecord extends Activity {
         	public void onItemClick(AdapterView<?> parent, View view,
         			int position, long id) {
         		
-        		String fullPath = trackPath + filesMap.get(((TextView) view).getText().toString());
-        		showAudioPlayer(fullPath);
-        		Toast.makeText(getApplicationContext(), "Playing: " + ((TextView) view).getText(), 
+//        		db.open();
+//        		Cursor c = db.getEntry(row_id);
+//        		String path = c.getString(4);
+//        		db.close();
+//        		
+//        		showAudioPlayer(path);
+        		
+        		//View view = listview.getChildAt(position);
+        		TextView textView = (TextView)view.findViewById(R.id.textTimeStamp);
+        		String _id = textView.getText().toString();
+        		String path = null;
+        		
+        		db.open();
+        		Cursor c = db.getEntryPathById(_id);
+        		if (c.moveToFirst()) {
+        				path = c.getString(0);
+        		}
+        		db.close();
+        		
+        		showAudioPlayer(path);
+        		Toast.makeText(getApplicationContext(), "Playing: " + path, 
             				Toast.LENGTH_SHORT).show();
         	}
         });
@@ -105,28 +136,33 @@ public class Eurecord extends Activity {
         toggleRecord.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		
-        		if (toggleRecord.isChecked()) {
-        			
-            		Calendar calendar = Calendar.getInstance();
-            		int second = calendar.get(Calendar.SECOND);
-            		int minute = calendar.get(Calendar.MINUTE);
-            		int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            		int day = calendar.get(Calendar.DAY_OF_MONTH);
-            		int month = calendar.get(Calendar.MONTH) + 1;
-            		int year = calendar.get(Calendar.YEAR);
-            		
-            		String sampleRateString = sampleRateSpinner.getSelectedItem().toString().replace(",", "");
-            		int sampleRate = Integer.parseInt(sampleRateString);
-            		
-            		String track = "Eurecord_" + year + "-" + month + "-" + day + 
-            						"-" + hour + "." + minute + "." + second;
-
-            		
-            		if (sampleRateString.equals("8000")) {
-            			track += ".3gp";
-            		} else {
-            			track += ".wav";
-            		}
+        		Calendar calendar = Calendar.getInstance();
+        		int second = calendar.get(Calendar.SECOND);
+        		int minute = calendar.get(Calendar.MINUTE);
+        		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        		int day = calendar.get(Calendar.DAY_OF_MONTH);
+        		int month = calendar.get(Calendar.MONTH) + 1;
+        		int year = calendar.get(Calendar.YEAR);
+        		String timeStamp = Long.toString(System.currentTimeMillis());
+        		
+        		String date = monthMap.get(month) + " " + day + ", " + year;
+        		String time = hour + ":" + minute + ":" + second;
+        		String track = "Eurecord_" + year + "-" + month + "-" + day + 
+						"-" + hour + "." + minute + "." + second;
+        		
+        		
+        		String sampleRateString = sampleRateSpinner.getSelectedItem().toString().replace(",", "");
+        		int sampleRate = Integer.parseInt(sampleRateString);
+        		
+        		if (sampleRateString.equals("8000")) {
+        			track += ".3gp";
+        		} else {
+        			track += ".wav";
+        		}
+        		
+        		String fullPath = trackPath + track;
+        		
+        		if (toggleRecord.isChecked()) {	
             			
             		//Toast.makeText(Eurecord.this, trackPath+track+ " "+ sampleRate, Toast.LENGTH_LONG).show();
 
@@ -139,7 +175,7 @@ public class Eurecord extends Activity {
             		}
             		
             		try {
-            			ar.setOutputFile(trackPath + track);
+            			ar.setOutputFile(fullPath);
             			ar.prepare();
             			ar.start();
             			Toast.makeText(Eurecord.this, "Recording " + trackPath + track, Toast.LENGTH_LONG).show();
@@ -150,19 +186,47 @@ public class Eurecord extends Activity {
         			ar.stop();
             		ar.release();
             		Toast.makeText(Eurecord.this, "stopped", Toast.LENGTH_LONG).show();
-            		prepareResources();
+            		
+            		long millis = 0;
+                	MediaPlayer mediaPlayer = new MediaPlayer();
+                	try {
+                		mediaPlayer.reset();
+                		mediaPlayer.setDataSource(fullPath);
+                		mediaPlayer.prepare();
+                		millis = mediaPlayer.getDuration();
+                	} catch (IOException e) {
+            			Log.v(getString(R.string.app_name), e.getMessage());
+                	}
+                	mediaPlayer.stop();
+                	mediaPlayer.release();
+                	
+                	int seconds = (int) (millis / 1000) % 60 ;
+                	int minutes = (int) ((millis / (1000*60)) % 60);
+
+                	String length = minutes + " min, " + seconds + " sec";
+                	
+            		//add to database
+            		db.open();
+                    db.addEntry(timeStamp, "empty", date, time, length, fullPath);
+            		db.close();
+            		
+            		updateListView();
+            		
+            		//prepareResources();
         		}
         		
 	
         	}
         });
+        //prepareResources();
+        updateListView();
         
     }
     
     @Override
     public void onResume() {
     	super.onResume();
-    	prepareResources();
+    	
     }
     
     @Override
@@ -189,55 +253,33 @@ public class Eurecord extends Activity {
     	
     }
     
-    public void prepareResources() {
+    public void updateListView() {
+    	db.open();
+    	List<HashMap<String, String>> rows = new ArrayList<HashMap<String, String>>();
+    	Cursor c = db.getEntriesOrderById();
     	
-    	if (sdIsMounted) {
-    		freeSpaceView.setText("There is " + (int)freeSpace() + "MB of space left.");
-    		
-    		FilenameFilter filter = new FilenameFilter() {
-    			public boolean accept(File dir, String name) {
-    				return name.startsWith("Eurecord_") && (name.endsWith(".wav") || name.endsWith(".3gp"));
-    			}
-    		};
-    		File dir = new File(trackPath);
-    		files = dir.list(filter);
-    		Arrays.sort(files);
-    		filesMap = new HashMap<String, String>();
-    		
-    		for (int i = 0; i < files.length; i++) {
-    			filesMap.put(parseAudioFile(files[i]), files[i]);
-    		}
-    		//String tmp[] = filesMap.keySet().toArray(new String[0]);
-    		
-    		listView.setAdapter(new ArrayAdapter<String>(this, R.layout.list_item, filesMap.keySet().toArray(new String[0])));
-    		
-    		
+    	if (c.moveToFirst()) {
+    		do {
+    			
+    			HashMap<String, String> fields = new HashMap<String, String>();
+    			
+    			String timeStamp = c.getString(0);
+    			String date = c.getString(2);
+    			String time = c.getString(3);
+    			String length = c.getString(4);
+    			
+    			fields.put("TimeStamp", timeStamp);
+    			fields.put("Date", date);
+    			fields.put("Length", length);
+    			fields.put("Time", "at " + time);
+
+                //db.addEntry(i+1, "empty", date, time, "empty", trackPath + files[i]);
+                
+    			rows.add(fields);
+    		} while (c.moveToNext());
     	}
-    }
-    
-    public String parseAudioFile(String input) {
-    	String tmp = input.substring(9, input.length()-4);
-    	StringTokenizer tokens = new StringTokenizer(tmp, "-.");
-    	StringBuilder result = new StringBuilder();
-    	
-    	int i = 0;
-    	while (tokens.hasMoreTokens()) {
-    		if (i == 1) {
-    			result.append(monthMap.get(Integer.parseInt(tokens.nextToken())));
-    		} else {
-    			result.append(tokens.nextToken());
-    		}
-    		
-    		if (tokens.hasMoreTokens() && i <= 2) {
-    			result.append(" ");
-    		} else if (tokens.hasMoreTokens() && i > 2) {
-    			result.append(":");
-    		}
-    		i++;
-    	}
-    	
-    	
-    	return result.toString();
+    	db.close();
+    	listView.setAdapter(new SimpleAdapter(this, rows, R.layout.list_item, from, to));
     }
     
     public double freeSpace() {
