@@ -29,6 +29,7 @@ public class AudioPlayer extends Activity {
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			fullPath = extras.getString("AUDIO_FILE_PATH");
+			Log.v("from AudioPlayer", fullPath);
 			
 		}
 		

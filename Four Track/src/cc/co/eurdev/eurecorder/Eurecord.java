@@ -75,6 +75,12 @@ public class Eurecord extends Activity {
     TextView listItem;
     ListView listView;
     HashMap<Long, String> filesMap;
+    
+    String timeStamp;
+	
+	String date;
+	String time;
+	String fullPath;
 	
 	
 	
@@ -136,33 +142,37 @@ public class Eurecord extends Activity {
         toggleRecord.setOnClickListener(new OnClickListener() {
         	public void onClick(View v) {
         		
-        		Calendar calendar = Calendar.getInstance();
-        		int second = calendar.get(Calendar.SECOND);
-        		int minute = calendar.get(Calendar.MINUTE);
-        		int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        		int day = calendar.get(Calendar.DAY_OF_MONTH);
-        		int month = calendar.get(Calendar.MONTH) + 1;
-        		int year = calendar.get(Calendar.YEAR);
-        		String timeStamp = Long.toString(System.currentTimeMillis());
         		
-        		String date = monthMap.get(month) + " " + day + ", " + year;
-        		String time = hour + ":" + minute + ":" + second;
-        		String track = "Eurecord_" + year + "-" + month + "-" + day + 
-						"-" + hour + "." + minute + "." + second;
-        		
-        		
-        		String sampleRateString = sampleRateSpinner.getSelectedItem().toString().replace(",", "");
-        		int sampleRate = Integer.parseInt(sampleRateString);
-        		
-        		if (sampleRateString.equals("8000")) {
-        			track += ".3gp";
-        		} else {
-        			track += ".wav";
-        		}
-        		
-        		String fullPath = trackPath + track;
         		
         		if (toggleRecord.isChecked()) {	
+        			
+        			Calendar calendar = Calendar.getInstance();
+            		int second = calendar.get(Calendar.SECOND);
+            		int minute = calendar.get(Calendar.MINUTE);
+            		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            		int day = calendar.get(Calendar.DAY_OF_MONTH);
+            		int month = calendar.get(Calendar.MONTH) + 1;
+            		int year = calendar.get(Calendar.YEAR);
+            		
+            		
+            		timeStamp = Long.toString(calendar.getTimeInMillis());
+            		
+            		date = monthMap.get(month) + " " + day + ", " + year;
+            		time = hour + ":" + minute + ":" + second;
+            		String track = "Eurecord_" + year + "-" + month + "-" + day + 
+    						"-" + hour + "." + minute + "." + second;
+            		
+            		
+            		String sampleRateString = sampleRateSpinner.getSelectedItem().toString().replace(",", "");
+            		int sampleRate = Integer.parseInt(sampleRateString);
+            		
+            		if (sampleRateString.equals("8000")) {
+            			track += ".3gp";
+            		} else {
+            			track += ".wav";
+            		}
+            		
+            		fullPath = trackPath + track;
             			
             		//Toast.makeText(Eurecord.this, trackPath+track+ " "+ sampleRate, Toast.LENGTH_LONG).show();
 
@@ -174,6 +184,7 @@ public class Eurecord extends Activity {
             					AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
             		}
             		
+            		Log.v("from recorder", fullPath);
             		try {
             			ar.setOutputFile(fullPath);
             			ar.prepare();
@@ -205,6 +216,7 @@ public class Eurecord extends Activity {
 
                 	String length = minutes + " min, " + seconds + " sec";
                 	
+                	Log.v("from DB", fullPath);
             		//add to database
             		db.open();
                     db.addEntry(timeStamp, "empty", date, time, length, fullPath);

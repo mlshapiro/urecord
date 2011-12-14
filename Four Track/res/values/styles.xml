@@ -8,6 +8,11 @@
     <style name="altColor">
         <item name="android:background">#27324B</item>
     </style>
+    
+    <style name="listViewColor">
+        <item name="android:background">#D5D5D5</item>
+        <item name="android:cacheColorHint">#D5D5D5</item>
+    </style>
         
 
     <style name="floatingWindow">
@@ -18,7 +23,7 @@
     </style>
 
     <style name="listItemDate">
-        <item name="android:background">#D5D5D5</item>
+
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingLeft">2dp</item>
@@ -31,7 +36,7 @@
     </style>
     
     <style name="listItemLength">
-        <item name="android:background">#D5D5D5</item>
+
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingLeft">2dp</item>
@@ -44,7 +49,7 @@
     </style>
     
     <style name="listItemTime">
-        <item name="android:background">#D5D5D5</item>
+
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingLeft">2dp</item>
