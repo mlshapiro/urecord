@@ -60,8 +60,8 @@ public class DBAdapter {
     }
     
     // remove entry from the database
-    public boolean deleteEntry(long rowID) {
-            return db.delete(DATABASE_TABLE, KEY_ROW_ID + "=" + rowID, null) > 0;
+    public boolean deleteEntry(String id) {
+            return db.delete(DATABASE_TABLE, KEY_ROW_ID + "=" + id, null) > 0;
     }
     
     public void deleteAll() {

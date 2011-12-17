@@ -1,16 +1,13 @@
 package cc.co.eurdev.eurecorder;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -22,12 +19,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.SimpleAdapter;
@@ -103,7 +104,7 @@ public class Eurecord extends Activity {
         listView = (ListView) findViewById(R.id.listView1);
         
         listView.setTextFilterEnabled(true);
-        
+        registerForContextMenu(listView);
         
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(
         		this, R.array.sample_rate_array, android.R.layout.simple_spinner_dropdown_item);
@@ -256,6 +257,52 @@ public class Eurecord extends Activity {
     public void onDestroy() {
     	super.onDestroy();
     	Log.i("onDestroy", "onDestroy() called");
+    }
+    
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+    	super.onCreateContextMenu(menu, v, menuInfo);
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.context_menu, menu);
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+    	AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+    	switch (item.getItemId()) {
+    	case R.id.itemDelete:
+    		TextView textView = (TextView)info.targetView.findViewById(R.id.textTimeStamp);
+    		String _id = textView.getText().toString();
+    		String path = null;
+    		
+    		db.open();
+    		Cursor c = db.getEntryPathById(_id);
+    		if (c.moveToFirst()) {
+    				path = c.getString(0);
+    		}
+			db.close();
+    		
+
+    		File file = new File(path);
+    		boolean deleted = file.delete();
+    		if (deleted) {
+    			db.open();
+    			db.deleteEntry(_id);
+    			db.close();
+    			updateListView();
+    			Toast.makeText(getApplicationContext(), path + " deleted", 
+        				Toast.LENGTH_SHORT).show();
+    		} else {
+    			Toast.makeText(getApplicationContext(), "Delete failed", 
+        				Toast.LENGTH_SHORT).show();
+    		}
+    		
+    		
+    		return true;
+    		
+    	default:
+    		return super.onContextItemSelected(item);
+    	}
     }
     
     public void showAudioPlayer(String fullPath) {
