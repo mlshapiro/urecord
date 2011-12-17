@@ -46,23 +46,18 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dip"
         android:layout_marginTop="4dip"
-        android:paddingLeft="20dip"
-        android:paddingRight="20dip" >
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip" >
 
         <Spinner
             android:id="@+id/spinner1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" >
+            style="@style/spinner">
         </Spinner>
 
         <ToggleButton
             android:id="@+id/toggleRecord"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ToggleButton"
-            android:textOff="Record"
-            android:textOn="Stop" >
+            style="@style/recordButton"
+             >
         </ToggleButton>
     </LinearLayout>
 

@@ -21,7 +21,25 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowNoTitle">true</item>
     </style>
+    
+    <style name="spinner">
+        <item name="android:layout_height">60dip</item>
+        <item name="android:layout_width">200dip</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingTop">2dip</item>
+    </style>
+    
+    <style name="recordButton">
+        <item name="android:layout_height">56dip</item>
+        <item name="android:layout_width">80dip</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:text">ToggleButton</item>
+        <item name="android:textOff">Record</item>
+        <item name="android:textOn">Stop</item>
+        <item name="android:paddingBottom">12dip</item>
+    </style>
 
+        
     <style name="listItemDate">
 
         <item name="android:layout_width">wrap_content</item>

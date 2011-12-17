@@ -10,15 +10,19 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.SeekBar;
+import android.widget.ToggleButton;
 
 public class AudioPlayer extends Activity {
 	
 	String fullPath;
 	static MediaPlayer mediaPlayer;
+	int pausePosition = 0;
 	SeekBar seekBar;
 	Runnable notification;
+	ToggleButton togglePlay;
 	Handler handler = new Handler();
 
 	@Override
@@ -34,6 +38,7 @@ public class AudioPlayer extends Activity {
 		}
 		
 		seekBar = (SeekBar) findViewById(R.id.seekBar);
+		togglePlay = (ToggleButton) findViewById(R.id.toggleButton1);
 		
 		seekBar.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -42,6 +47,30 @@ public class AudioPlayer extends Activity {
 				return false;
 			}
 		});
+		
+		togglePlay.setOnClickListener(new OnClickListener() {
+        	public void onClick(View v) {
+
+        		if (togglePlay.isChecked()) {
+        			if (pausePosition > 0) {
+        				mediaPlayer.seekTo(pausePosition);
+        			}
+        			mediaPlayer.start();
+        			seekBarUpdater();
+        			
+        		} else {
+        			if (mediaPlayer.isPlaying()) {
+        				mediaPlayer.pause();
+        				pausePosition = mediaPlayer.getCurrentPosition();
+        				handler.removeCallbacks(notification);
+        				seekBar.setProgress(pausePosition);
+        			}
+        			
+        		}
+        		
+	
+        	}
+        });
 		playAudio();
 	}
 	
@@ -78,6 +107,8 @@ public class AudioPlayer extends Activity {
     	} else {
     		mediaPlayer.pause();
     		seekBar.setProgress(0);
+    		pausePosition = 0;
+    		togglePlay.setChecked(false);
     	}
     }
 	
@@ -95,6 +126,8 @@ public class AudioPlayer extends Activity {
     	    		seekBarUpdater();	
     			}
     		});
+    		
+    		togglePlay.setChecked(true);
     		
     		
     	} catch (IOException e) {
