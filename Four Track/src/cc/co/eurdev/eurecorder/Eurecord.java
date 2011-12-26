@@ -1,8 +1,11 @@
 package cc.co.eurdev.eurecorder;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,14 +65,15 @@ public class Eurecord extends Activity {
 				put(12, "Dec");
 			}});
 	
-	
+	SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss aa");
+	SimpleDateFormat fileNameDateFormatter = new SimpleDateFormat("yyyy-MM-dd.HH.mm.ss");
 	String trackPath;
 	boolean sdIsMounted;
 	LinearLayout layout;
 	LinearLayout.LayoutParams params;
 	TextView freeSpaceView;
 	AudioRecorder ar;
-	String[] files;
+	
 	ToggleButton toggleRecord;
     Spinner sampleRateSpinner;
     SeekBar seekBar;
@@ -149,20 +153,17 @@ public class Eurecord extends Activity {
         		if (toggleRecord.isChecked()) {	
         			
         			Calendar calendar = Calendar.getInstance();
-            		int second = calendar.get(Calendar.SECOND);
-            		int minute = calendar.get(Calendar.MINUTE);
-            		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        			
             		int day = calendar.get(Calendar.DAY_OF_MONTH);
             		int month = calendar.get(Calendar.MONTH) + 1;
             		int year = calendar.get(Calendar.YEAR);
-            		
-            		
+
             		timeStamp = Long.toString(calendar.getTimeInMillis());
             		
             		date = monthMap.get(month) + " " + day + ", " + year;
-            		time = hour + ":" + minute + ":" + second;
-            		String track = "Eurecord_" + year + "-" + month + "-" + day + 
-    						"-" + hour + "." + minute + "." + second;
+            		//time = hour + ":" + minute + ":" + second;
+            		time = dateFormatter.format(calendar.getTime());
+            		String track = "Eurecord_" + fileNameDateFormatter.format(calendar.getTime());
             		
             		
             		String sampleRateString = sampleRateSpinner.getSelectedItem().toString().replace(",", "");
@@ -231,9 +232,18 @@ public class Eurecord extends Activity {
 	
         	}
         });
+        syncDatabaseWithFileSystem();
         updateListView();
         updateFreeSpace();
         
+    }
+    
+    @Override
+    public void onRestart() {
+    	super.onRestart();
+    	syncDatabaseWithFileSystem();
+        updateListView();
+    	
     }
     
     @Override
@@ -305,6 +315,48 @@ public class Eurecord extends Activity {
     		
     	default:
     		return super.onContextItemSelected(item);
+    	}
+    }
+    
+    public void syncDatabaseWithFileSystem() {
+    	
+    	if (sdIsMounted) {
+    		
+    		FilenameFilter filter = new FilenameFilter() {
+    			public boolean accept(File dir, String name) {
+    				return name.startsWith("Eurecord_") && (name.endsWith(".wav") || name.endsWith(".3gp"));
+    			}
+    		};
+    		File dir = new File(trackPath);
+    		String[] files = dir.list(filter);
+    		
+    		for (int i = 0; i < files.length; i++) {
+    			files[i] = trackPath + files[i];
+    			Log.i("syncDatabaseWithFileSystem", files[i]);
+    		}
+    		
+    		db.open();
+    		Cursor c = db.getEntriesOrderById();
+
+    		if (c.moveToFirst()) {
+    			do {
+
+    				String path = c.getString(5);
+    				String timeStamp = c.getString(0);
+    				//Log.i("DB content", path);
+    				if (!Arrays.asList(files).contains(path)) {
+    				
+    					//remove current entry from database
+//    					Toast.makeText(getApplicationContext(), path + " not found.  Removing from DB", 
+//            					Toast.LENGTH_SHORT).show();
+    					Log.i("syncDatabaseWithFileSystem", "removing " + path);
+    					db.deleteEntry(timeStamp);
+    				}
+    			
+    			} while (c.moveToNext());
+    		}
+    		db.close();
+    		
     	}
     }
     

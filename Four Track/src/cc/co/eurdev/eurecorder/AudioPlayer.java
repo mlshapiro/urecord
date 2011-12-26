@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 public class AudioPlayer extends Activity {
@@ -24,21 +25,26 @@ public class AudioPlayer extends Activity {
 	Runnable notification;
 	ToggleButton togglePlay;
 	Handler handler = new Handler();
+	TextView filePathText;
+	
+	
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.audioplayer);
 		
+		filePathText = (TextView)findViewById(R.id.textFilePath);
+		seekBar = (SeekBar) findViewById(R.id.seekBar);
+		togglePlay = (ToggleButton) findViewById(R.id.toggleButton1);
+		
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			fullPath = extras.getString("AUDIO_FILE_PATH");
+			filePathText.setText("Playing: " + fullPath);
 			Log.v("from AudioPlayer", fullPath);
 			
 		}
-		
-		seekBar = (SeekBar) findViewById(R.id.seekBar);
-		togglePlay = (ToggleButton) findViewById(R.id.toggleButton1);
 		
 		seekBar.setOnTouchListener(new OnTouchListener() {
 			@Override
