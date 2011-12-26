@@ -75,7 +75,7 @@ public class Eurecord extends Activity {
     SeekBar seekBar;
     TextView listItem;
     ListView listView;
-    HashMap<Long, String> filesMap;
+    HashMap<Integer, String> filesMap;
     
     String timeStamp;
 	
@@ -123,16 +123,17 @@ public class Eurecord extends Activity {
 //        		showAudioPlayer(path);
         		
         		//View view = listview.getChildAt(position);
-        		TextView textView = (TextView)view.findViewById(R.id.textTimeStamp);
-        		String _id = textView.getText().toString();
+//        		TextView textView = (TextView)view.findViewById(R.id.textTimeStamp);
+//        		String _id = textView.getText().toString();
         		String path = null;
         		
-        		db.open();
-        		Cursor c = db.getEntryPathById(_id);
-        		if (c.moveToFirst()) {
-        				path = c.getString(0);
-        		}
-        		db.close();
+//        		db.open();
+//        		Cursor c = db.getEntryPathById(_id);
+//        		if (c.moveToFirst()) {
+//        				path = c.getString(0);
+//        		}
+//        		db.close();
+        		path = filesMap.get((int)id);
         		
         		showAudioPlayer(path);
         		Toast.makeText(getApplicationContext(), "Playing: " + path, 
@@ -224,15 +225,14 @@ public class Eurecord extends Activity {
             		db.close();
             		
             		updateListView();
-            		
-            		//prepareResources();
+            		updateFreeSpace();
         		}
         		
 	
         	}
         });
-        //prepareResources();
         updateListView();
+        updateFreeSpace();
         
     }
     
@@ -274,13 +274,16 @@ public class Eurecord extends Activity {
     		TextView textView = (TextView)info.targetView.findViewById(R.id.textTimeStamp);
     		String _id = textView.getText().toString();
     		String path = null;
+    		long id = info.id;
     		
-    		db.open();
-    		Cursor c = db.getEntryPathById(_id);
-    		if (c.moveToFirst()) {
-    				path = c.getString(0);
-    		}
-			db.close();
+    		path = filesMap.get((int)id);
+    		
+//    		db.open();
+//    		Cursor c = db.getEntryPathById(_id);
+//    		if (c.moveToFirst()) {
+//    				path = c.getString(0);
+//    		}
+//			db.close();
     		
 
     		File file = new File(path);
@@ -316,6 +319,8 @@ public class Eurecord extends Activity {
     	db.open();
     	List<HashMap<String, String>> rows = new ArrayList<HashMap<String, String>>();
     	Cursor c = db.getEntriesOrderById();
+    	filesMap = new HashMap<Integer, String>();
+    	int i = 0;
     	
     	if (c.moveToFirst()) {
     		do {
@@ -326,6 +331,7 @@ public class Eurecord extends Activity {
     			String date = c.getString(2);
     			String time = c.getString(3);
     			String length = c.getString(4);
+    			String path = c.getString(5);
     			
     			fields.put("TimeStamp", timeStamp);
     			fields.put("Date", date);
@@ -333,6 +339,8 @@ public class Eurecord extends Activity {
     			fields.put("Time", "at " + time);
 
                 //db.addEntry(i+1, "empty", date, time, "empty", trackPath + files[i]);
+    			filesMap.put(i, path);
+    			i++;
                 
     			rows.add(fields);
     		} while (c.moveToNext());
@@ -341,12 +349,15 @@ public class Eurecord extends Activity {
     	listView.setAdapter(new SimpleAdapter(this, rows, R.layout.list_item, from, to));
     }
     
-    public double freeSpace() {
+    public void updateFreeSpace() {
+    	if (sdIsMounted) {
+    		StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+    		double availableSize = (double)stat.getAvailableBlocks() *(double)stat.getBlockSize();
+    		//One binary gigabyte equals 1,073,741,824 bytes.
+    		//double gigaAvailable = sdAvailSize / 1073741824;
+    		double mbAvailable =  availableSize / 1048576;
     	
-    	StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-    	double availableSize = (double)stat.getAvailableBlocks() *(double)stat.getBlockSize();
-    	//One binary gigabyte equals 1,073,741,824 bytes.
-    	//double gigaAvailable = sdAvailSize / 1073741824;
-    	return availableSize / 1048576;
+    		freeSpaceView.setText("There is " + (int)mbAvailable + "MB of space left.");
+    	}
     }
 }
