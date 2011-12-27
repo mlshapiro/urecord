@@ -1,4 +1,4 @@
-package cc.co.eurdev.eurecorder.db;
+package cc.co.eurdev.urecorder.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

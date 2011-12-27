@@ -1,6 +1,8 @@
-package cc.co.eurdev.eurecorder;
+package cc.co.eurdev.urecorder;
 
 import java.io.IOException;
+
+import cc.co.eurdev.urecorder.R;
 
 import android.app.Activity;
 import android.media.MediaPlayer;

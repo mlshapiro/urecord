@@ -1,4 +1,4 @@
-package cc.co.eurdev.eurecorder;
+package cc.co.eurdev.urecorder;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -39,9 +39,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import cc.co.eurdev.eurecorder.db.DBAdapter;
+import cc.co.eurdev.urecorder.R;
+import cc.co.eurdev.urecorder.db.DBAdapter;
 
-public class Eurecord extends Activity {
+public class Urecord extends Activity {
     /** Called when the activity is first created. */
 	
 	private DBAdapter db = new DBAdapter(this);
@@ -119,24 +120,7 @@ public class Eurecord extends Activity {
         	public void onItemClick(AdapterView<?> parent, View view,
         			int position, long id) {
         		
-//        		db.open();
-//        		Cursor c = db.getEntry(row_id);
-//        		String path = c.getString(4);
-//        		db.close();
-//        		
-//        		showAudioPlayer(path);
-        		
-        		//View view = listview.getChildAt(position);
-//        		TextView textView = (TextView)view.findViewById(R.id.textTimeStamp);
-//        		String _id = textView.getText().toString();
         		String path = null;
-        		
-//        		db.open();
-//        		Cursor c = db.getEntryPathById(_id);
-//        		if (c.moveToFirst()) {
-//        				path = c.getString(0);
-//        		}
-//        		db.close();
         		path = filesMap.get((int)id);
         		
         		showAudioPlayer(path);
@@ -163,7 +147,7 @@ public class Eurecord extends Activity {
             		date = monthMap.get(month) + " " + day + ", " + year;
             		//time = hour + ":" + minute + ":" + second;
             		time = dateFormatter.format(calendar.getTime());
-            		String track = "Eurecord_" + fileNameDateFormatter.format(calendar.getTime());
+            		String track = "Urecord_" + fileNameDateFormatter.format(calendar.getTime());
             		
             		
             		String sampleRateString = sampleRateSpinner.getSelectedItem().toString().replace(",", "");
@@ -177,7 +161,7 @@ public class Eurecord extends Activity {
             		
             		fullPath = trackPath + track;
             			
-            		//Toast.makeText(Eurecord.this, trackPath+track+ " "+ sampleRate, Toast.LENGTH_LONG).show();
+            		//Toast.makeText(Urecord.this, trackPath+track+ " "+ sampleRate, Toast.LENGTH_LONG).show();
 
             		if (sampleRate == 8000) {
             			ar = new AudioRecorder(false, AudioSource.MIC, sampleRate,
@@ -192,14 +176,14 @@ public class Eurecord extends Activity {
             			ar.setOutputFile(fullPath);
             			ar.prepare();
             			ar.start();
-            			Toast.makeText(Eurecord.this, "Recording " + trackPath + track, Toast.LENGTH_LONG).show();
+            			Toast.makeText(Urecord.this, "Recording " + trackPath + track, Toast.LENGTH_LONG).show();
             		} catch (Exception e) {
             			Log.e("record: ", e.getMessage());
             		}
         		} else {
         			ar.stop();
             		ar.release();
-            		Toast.makeText(Eurecord.this, "stopped", Toast.LENGTH_LONG).show();
+            		Toast.makeText(Urecord.this, "stopped", Toast.LENGTH_LONG).show();
             		
             		long millis = 0;
                 	MediaPlayer mediaPlayer = new MediaPlayer();
@@ -287,14 +271,6 @@ public class Eurecord extends Activity {
     		long id = info.id;
     		
     		path = filesMap.get((int)id);
-    		
-//    		db.open();
-//    		Cursor c = db.getEntryPathById(_id);
-//    		if (c.moveToFirst()) {
-//    				path = c.getString(0);
-//    		}
-//			db.close();
-    		
 
     		File file = new File(path);
     		boolean deleted = file.delete();

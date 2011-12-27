@@ -1,4 +1,4 @@
-package cc.co.eurdev.eurecorder;
+package cc.co.eurdev.urecorder;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Eurecord</string>
-    <string name="package_name">cc.co.eurdev.eurecord</string>
+    <string name="app_name">Urecord</string>
+    <string name="package_name">cc.co.eurdev.urecord</string>
     <string name="sample_rate">Sample rate:</string>
     <string-array name="sample_rate_array">
     	<item>44,100</item>

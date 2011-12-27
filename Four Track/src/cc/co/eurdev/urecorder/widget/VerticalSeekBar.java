@@ -1,4 +1,4 @@
-package cc.co.eurdev.eurecorder.widget;
+package cc.co.eurdev.urecorder.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
