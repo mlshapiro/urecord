@@ -42,6 +42,7 @@ public class AudioPlayer extends Activity {
 		if (extras != null) {
 			fullPath = extras.getString("AUDIO_FILE_PATH");
 			filePathText.setText("Playing: " + fullPath);
+			filePathText.setSelected(true);
 			Log.v("from AudioPlayer", fullPath);
 			
 		}

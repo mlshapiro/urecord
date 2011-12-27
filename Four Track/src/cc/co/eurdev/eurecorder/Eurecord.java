@@ -65,7 +65,7 @@ public class Eurecord extends Activity {
 				put(12, "Dec");
 			}});
 	
-	SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss aa");
+	SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss aa");
 	SimpleDateFormat fileNameDateFormatter = new SimpleDateFormat("yyyy-MM-dd.HH.mm.ss");
 	String trackPath;
 	boolean sdIsMounted;
