@@ -84,9 +84,16 @@ public class AudioPlayer extends Activity {
 	}
 	
 	@Override
+	public void onStop() {
+		super.onStop();
+		Log.i("AudioPlayer", "onStop() called");
+
+	}
+	
+	@Override
     public void onDestroy() {
     	super.onDestroy();
-    	Log.i("onDestroy", "onDestroy() called");
+    	Log.i("AudioPlayer", "onDestroy() called");
     	
     	handler.removeCallbacks(notification);
     	if (mediaPlayer != null) {

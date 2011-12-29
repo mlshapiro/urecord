@@ -39,7 +39,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import cc.co.eurdev.urecorder.R;
 import cc.co.eurdev.urecorder.db.DBAdapter;
 
 public class Urecord extends Activity {
@@ -135,104 +134,42 @@ public class Urecord extends Activity {
         		
         		
         		if (toggleRecord.isChecked()) {	
-        			
-        			Calendar calendar = Calendar.getInstance();
-        			
-            		int day = calendar.get(Calendar.DAY_OF_MONTH);
-            		int month = calendar.get(Calendar.MONTH) + 1;
-            		int year = calendar.get(Calendar.YEAR);
-
-            		timeStamp = Long.toString(calendar.getTimeInMillis());
-            		
-            		date = monthMap.get(month) + " " + day + ", " + year;
-            		//time = hour + ":" + minute + ":" + second;
-            		time = dateFormatter.format(calendar.getTime());
-            		String track = "Urecord_" + fileNameDateFormatter.format(calendar.getTime());
-            		
-            		
-            		String sampleRateString = sampleRateSpinner.getSelectedItem().toString().replace(",", "");
-            		int sampleRate = Integer.parseInt(sampleRateString);
-            		
-            		if (sampleRateString.equals("8000")) {
-            			track += ".3gp";
-            		} else {
-            			track += ".wav";
-            		}
-            		
-            		fullPath = trackPath + track;
-            			
-            		//Toast.makeText(Urecord.this, trackPath+track+ " "+ sampleRate, Toast.LENGTH_LONG).show();
-
-            		if (sampleRate == 8000) {
-            			ar = new AudioRecorder(false, AudioSource.MIC, sampleRate,
-            					AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
-            		} else {
-            			ar = new AudioRecorder(true, AudioSource.MIC, sampleRate, 
-            					AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
-            		}
-            		
-            		Log.v("from recorder", fullPath);
-            		try {
-            			ar.setOutputFile(fullPath);
-            			ar.prepare();
-            			ar.start();
-            			Toast.makeText(Urecord.this, "Recording " + trackPath + track, Toast.LENGTH_LONG).show();
-            		} catch (Exception e) {
-            			Log.e("record: ", e.getMessage());
-            		}
+        			startRecording();
         		} else {
-        			ar.stop();
-            		ar.release();
-            		Toast.makeText(Urecord.this, "stopped", Toast.LENGTH_LONG).show();
-            		
-            		long millis = 0;
-                	MediaPlayer mediaPlayer = new MediaPlayer();
-                	try {
-                		mediaPlayer.reset();
-                		mediaPlayer.setDataSource(fullPath);
-                		mediaPlayer.prepare();
-                		millis = mediaPlayer.getDuration();
-                	} catch (IOException e) {
-            			Log.v(getString(R.string.app_name), e.getMessage());
-                	}
-                	mediaPlayer.stop();
-                	mediaPlayer.release();
-                	
-                	int seconds = (int) (millis / 1000) % 60 ;
-                	int minutes = (int) ((millis / (1000*60)) % 60);
-
-                	String length = minutes + " min, " + seconds + " sec";
-                	
-                	Log.v("from DB", fullPath);
-            		//add to database
-            		db.open();
-                    db.addEntry(timeStamp, "empty", date, time, length, fullPath);
-            		db.close();
-            		
-            		updateListView();
-            		updateFreeSpace();
+        			stopRecording();
+        			
         		}
         		
 	
         	}
         });
-        syncDatabaseWithFileSystem();
+//        syncDatabaseWithFileSystem();
+//        updateListView();
+//        updateFreeSpace();
+        
+    }
+    
+    @Override
+    public void onStart() {
+    	super.onStart();
+    	Log.i("onStart", "onStart() called");
+    	syncDatabaseWithFileSystem();
         updateListView();
         updateFreeSpace();
-        
+    	
     }
     
     @Override
     public void onRestart() {
     	super.onRestart();
-    	syncDatabaseWithFileSystem();
-        updateListView();
+    	Log.i("onRestart", "onRestart() called");
     	
     }
     
     @Override
     public void onResume() {
     	super.onResume();
+    	Log.i("onResume", "onResume() called");
     	
     }
     
@@ -240,11 +177,19 @@ public class Urecord extends Activity {
     public void onPause() {
     	super.onPause();
     	Log.i("onPause", "onPause() called");
+    	
     }
     
     @Override
     public void onStop() {
     	super.onStop();
+    	Log.i("onStop", "onStop() called");
+    	if (ar != null) {
+    		if (ar.getState() == AudioRecorder.State.RECORDING) {
+    			stopRecording();
+    			toggleRecord.setChecked(false);
+    		}
+    	}
     }
     
     @Override
@@ -294,13 +239,93 @@ public class Urecord extends Activity {
     	}
     }
     
+    public void startRecording() {
+    	Calendar calendar = Calendar.getInstance();
+		
+		int day = calendar.get(Calendar.DAY_OF_MONTH);
+		int month = calendar.get(Calendar.MONTH) + 1;
+		int year = calendar.get(Calendar.YEAR);
+
+		timeStamp = Long.toString(calendar.getTimeInMillis());
+		
+		date = monthMap.get(month) + " " + day + ", " + year;
+		//time = hour + ":" + minute + ":" + second;
+		time = dateFormatter.format(calendar.getTime());
+		String track = "Urecord_" + fileNameDateFormatter.format(calendar.getTime());
+		
+		
+		String sampleRateString = sampleRateSpinner.getSelectedItem().toString().replace(",", "");
+		int sampleRate = Integer.parseInt(sampleRateString);
+		
+		if (sampleRateString.equals("8000")) {
+			track += ".3gp";
+		} else {
+			track += ".wav";
+		}
+		
+		fullPath = trackPath + track;
+			
+		//Toast.makeText(Urecord.this, trackPath+track+ " "+ sampleRate, Toast.LENGTH_LONG).show();
+
+		if (sampleRate == 8000) {
+			ar = new AudioRecorder(false, AudioSource.MIC, sampleRate,
+					AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
+		} else {
+			ar = new AudioRecorder(true, AudioSource.MIC, sampleRate, 
+					AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
+		}
+		
+		Log.v("from recorder", fullPath);
+		try {
+			ar.setOutputFile(fullPath);
+			ar.prepare();
+			ar.start();
+			Toast.makeText(Urecord.this, "Recording " + trackPath + track, Toast.LENGTH_LONG).show();
+		} catch (Exception e) {
+			Log.e("record: ", e.getMessage());
+		}
+    }
+    
+    public void stopRecording() {
+    	ar.stop();
+		ar.release();
+		Toast.makeText(Urecord.this, "stopped", Toast.LENGTH_LONG).show();
+		
+		long millis = 0;
+    	MediaPlayer mediaPlayer = new MediaPlayer();
+    	try {
+    		mediaPlayer.reset();
+    		mediaPlayer.setDataSource(fullPath);
+    		mediaPlayer.prepare();
+    		millis = mediaPlayer.getDuration();
+    	} catch (IOException e) {
+			Log.v(getString(R.string.app_name), e.getMessage());
+    	}
+    	mediaPlayer.stop();
+    	mediaPlayer.release();
+    	
+    	int seconds = (int) (millis / 1000) % 60 ;
+    	int minutes = (int) ((millis / (1000*60)) % 60);
+
+    	String length = minutes + " min, " + seconds + " sec";
+    	
+    	Log.v("from DB", fullPath);
+		//add to database
+		db.open();
+        db.addEntry(timeStamp, "empty", date, time, length, fullPath);
+		db.close();
+		updateListView();
+		updateFreeSpace();
+		Log.i("stopRecording", "end of stopRecording() reached");
+    }
+    
     public void syncDatabaseWithFileSystem() {
     	
     	if (sdIsMounted) {
     		
     		FilenameFilter filter = new FilenameFilter() {
     			public boolean accept(File dir, String name) {
-    				return name.startsWith("Eurecord_") && (name.endsWith(".wav") || name.endsWith(".3gp"));
+    				return name.startsWith("Urecord_") && (name.endsWith(".wav") || name.endsWith(".3gp"));
     			}
     		};
     		File dir = new File(trackPath);
@@ -308,20 +333,20 @@ public class Urecord extends Activity {
     		
     		for (int i = 0; i < files.length; i++) {
     			files[i] = trackPath + files[i];
-    			Log.i("syncDatabaseWithFileSystem", files[i]);
     		}
     		
     		db.open();
     		Cursor c = db.getEntriesOrderById();
 
+    		// If the file path from the db entry does not match an actual file on the file system,
+			// we know that the file has been deleted or moved, and should remove from database
     		if (c.moveToFirst()) {
     			do {
 
     				String path = c.getString(5);
     				String timeStamp = c.getString(0);
-    				//Log.i("DB content", path);
+
     				if (!Arrays.asList(files).contains(path)) {
-    				
     					//remove current entry from database
 //    					Toast.makeText(getApplicationContext(), path + " not found.  Removing from DB", 
 //            					Toast.LENGTH_SHORT).show();
