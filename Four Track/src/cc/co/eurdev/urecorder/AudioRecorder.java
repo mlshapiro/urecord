@@ -10,7 +10,6 @@ import android.media.MediaRecorder;
 import android.util.Log;
 
 public class AudioRecorder {
-	
 
 	public enum State {
 		INITIALIZING, READY, RECORDING, ERROR, STOPPED

@@ -4,10 +4,10 @@
     <string name="package_name">cc.co.eurdev.urecord</string>
     <string name="sample_rate">Sample rate:</string>
     <string-array name="sample_rate_array">
-    	<item>44,100</item>
-    	<item>22,050</item>
-    	<item>16,000</item>
-    	<item>11,025</item>
-    	<item>8,000</item>
+    	<item>44.1 kHz</item>
+    	<item>22.05 kHz</item>
+    	<item>16 kHz</item>
+    	<item>11.025 kHz</item>
+    	<item>8 kHz (compressed)</item>
     </string-array>
 </resources>
