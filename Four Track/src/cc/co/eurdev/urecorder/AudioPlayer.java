@@ -67,10 +67,7 @@ public class AudioPlayer extends Activity {
 
 				} else {
 					if (mediaPlayer.isPlaying()) {
-						mediaPlayer.pause();
-						pausePosition = mediaPlayer.getCurrentPosition();
-						handler.removeCallbacks(notification);
-						seekBar.setProgress(pausePosition);
+						pauseAudio();
 					}
 
 				}
@@ -84,6 +81,13 @@ public class AudioPlayer extends Activity {
 	public void onStop() {
 		super.onStop();
 		// Log.i("AudioPlayer", "onStop() called");
+		//this.finish();
+		if (mediaPlayer != null) {
+			if (mediaPlayer.isPlaying()) {
+				pauseAudio();
+				togglePlay.setChecked(false);
+			}
+		}
 
 	}
 
@@ -122,6 +126,7 @@ public class AudioPlayer extends Activity {
 			seekBar.setProgress(0);
 			pausePosition = 0;
 			togglePlay.setChecked(false);
+			this.finish();
 		}
 	}
 
@@ -145,6 +150,14 @@ public class AudioPlayer extends Activity {
 		} catch (IOException e) {
 			Log.e(getString(R.string.app_name), e.getMessage());
 		}
+	}
+	
+	public void pauseAudio() {
+		
+		mediaPlayer.pause();
+		pausePosition = mediaPlayer.getCurrentPosition();
+		handler.removeCallbacks(notification);
+		seekBar.setProgress(pausePosition);
 	}
 
 }
