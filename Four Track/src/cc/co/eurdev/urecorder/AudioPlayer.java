@@ -2,13 +2,15 @@ package cc.co.eurdev.urecorder;
 
 import java.io.IOException;
 
-import cc.co.eurdev.urecorder.R;
-
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,22 +23,30 @@ import android.widget.ToggleButton;
 public class AudioPlayer extends Activity {
 
 	String fullPath;
-	static MediaPlayer mediaPlayer;
+	MediaPlayer mediaPlayer;
 	int pausePosition = 0;
 	SeekBar seekBar;
 	Runnable notification;
 	ToggleButton togglePlay;
 	Handler handler = new Handler();
 	TextView filePathText;
+	TelephonyManager telephonyManager;
+	boolean isPhone;
+	PhoneStateListener callEventListener;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.audioplayer);
+		
+		PackageManager pm = getPackageManager();
+		isPhone = pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
 
 		filePathText = (TextView) findViewById(R.id.textFilePath);
 		seekBar = (SeekBar) findViewById(R.id.seekBar);
 		togglePlay = (ToggleButton) findViewById(R.id.toggleButton1);
+		
+		mediaPlayer = new MediaPlayer();
 
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
@@ -74,21 +84,52 @@ public class AudioPlayer extends Activity {
 
 			}
 		});
+		
+		if (isPhone) {
+			
+			callEventListener = new PhoneStateListener(){
+				
+				@Override
+				public void onCallStateChanged(int state, String incomingNumber) {
+					super.onCallStateChanged(state, incomingNumber);
+//              	  if (state == TelephonyManager.CALL_STATE_IDLE){
+//              	      //....
+//              	  }
+					if (state == TelephonyManager.CALL_STATE_RINGING){
+						
+						if (mediaPlayer.isPlaying()) {
+							pauseAudio();
+							togglePlay.setChecked(false);
+						}
+					}
+				}
+			};
+			telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+			telephonyManager.listen(callEventListener, PhoneStateListener.LISTEN_CALL_STATE);
+		}
+        
 		playAudio();
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		// Log.i("AudioPlayer", "onPause() called");
+		//this.finish();
+
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
-		// Log.i("AudioPlayer", "onStop() called");
+		Log.i("AudioPlayer", "onStop() called");
 		//this.finish();
-		if (mediaPlayer != null) {
-			if (mediaPlayer.isPlaying()) {
-				pauseAudio();
-				togglePlay.setChecked(false);
-			}
-		}
-
+//		if (mediaPlayer != null) {
+//			if (mediaPlayer.isPlaying()) {
+//				pauseAudio();
+//				togglePlay.setChecked(false);
+//			}
+//		}
 	}
 
 	@Override
@@ -97,17 +138,18 @@ public class AudioPlayer extends Activity {
 		// Log.i("AudioPlayer", "onDestroy() called");
 
 		handler.removeCallbacks(notification);
-		if (mediaPlayer != null) {
-			mediaPlayer.stop();
-			mediaPlayer.release();
+		mediaPlayer.stop();
+		mediaPlayer.release();
+		if (isPhone) {
+			telephonyManager.listen(callEventListener, PhoneStateListener.LISTEN_NONE);
 		}
 	}
 
 	public void seekTo(View v) {
-		if (mediaPlayer.isPlaying()) {
-			SeekBar sb = (SeekBar) v;
-			mediaPlayer.seekTo(sb.getProgress());
-		}
+			if (mediaPlayer.isPlaying()) {
+				SeekBar sb = (SeekBar) v;
+				mediaPlayer.seekTo(sb.getProgress());
+			}
 
 	}
 
@@ -126,13 +168,13 @@ public class AudioPlayer extends Activity {
 			seekBar.setProgress(0);
 			pausePosition = 0;
 			togglePlay.setChecked(false);
-			this.finish();
+			//this.finish();
 		}
 	}
 
 	public void playAudio() {
 
-		mediaPlayer = new MediaPlayer();
+		
 		try {
 			mediaPlayer.reset();
 			mediaPlayer.setDataSource(fullPath);

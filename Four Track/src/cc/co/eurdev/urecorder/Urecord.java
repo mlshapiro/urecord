@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.AudioFormat;
 import android.media.MediaPlayer;
@@ -21,6 +23,8 @@ import android.media.MediaRecorder.AudioSource;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -94,6 +98,9 @@ public class Urecord extends Activity {
 	TextView listItem;
 	ListView listView;
 	HashMap<Integer, String> filesMap;
+	
+	TelephonyManager telephonyManager;
+	PhoneStateListener callEventListener;
 
 	String timeStamp;
 
@@ -105,6 +112,9 @@ public class Urecord extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		PackageManager pm = getPackageManager();
+		boolean isPhone = pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
 
 		sdIsMounted = Environment.getExternalStorageState().equals(
 				Environment.MEDIA_MOUNTED);
@@ -155,9 +165,32 @@ public class Urecord extends Activity {
 
 			}
 		});
-		// syncDatabaseWithFileSystem();
-		// updateListView();
-		// updateFreeSpace();
+		
+		if (isPhone) {
+			callEventListener = new PhoneStateListener(){
+				
+				@Override
+				public void onCallStateChanged(int state, String incomingNumber) {
+					super.onCallStateChanged(state, incomingNumber);
+//              	  if (state == TelephonyManager.CALL_STATE_IDLE){
+//              	      //....
+//              	  }
+					if (state == TelephonyManager.CALL_STATE_RINGING){
+						if (ar != null) {
+							if (ar.getState() == AudioRecorder.State.RECORDING) {
+								stopRecording();
+								toggleRecord.setChecked(false);
+							}
+						}
+					}
+				}
+			};
+			telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+			telephonyManager.listen(callEventListener, PhoneStateListener.LISTEN_CALL_STATE);
+		}
+		syncDatabaseWithFileSystem();
+		updateListView();
+		updateFreeSpace();
 
 	}
 
@@ -165,9 +198,9 @@ public class Urecord extends Activity {
 	public void onStart() {
 		super.onStart();
 		// Log.i("onStart", "onStart() called");
-		syncDatabaseWithFileSystem();
-		updateListView();
-		updateFreeSpace();
+//		syncDatabaseWithFileSystem();
+//		updateListView();
+//		updateFreeSpace();
 
 	}
 
@@ -188,26 +221,27 @@ public class Urecord extends Activity {
 	@Override
 	public void onPause() {
 		super.onPause();
-		// Log.i("onPause", "onPause() called");
+		Log.i("Urecord", "onPause() called");
 
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
-		// Log.i("onStop", "onStop() called");
+		Log.i("Urecord", "onStop() called");
+		
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Log.i("Urecord", "onDestroy() called");
 		if (ar != null) {
 			if (ar.getState() == AudioRecorder.State.RECORDING) {
 				stopRecording();
 				toggleRecord.setChecked(false);
 			}
 		}
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		// Log.i("onDestroy", "onDestroy() called");
 	}
 
 	@Override
