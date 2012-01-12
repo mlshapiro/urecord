@@ -221,21 +221,21 @@ public class Urecord extends Activity {
 	@Override
 	public void onPause() {
 		super.onPause();
-		Log.i("Urecord", "onPause() called");
+//		Log.i("Urecord", "onPause() called");
 
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
-		Log.i("Urecord", "onStop() called");
+//		Log.i("Urecord", "onStop() called");
 		
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		Log.i("Urecord", "onDestroy() called");
+//		Log.i("Urecord", "onDestroy() called");
 		if (ar != null) {
 			if (ar.getState() == AudioRecorder.State.RECORDING) {
 				stopRecording();

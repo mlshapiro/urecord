@@ -122,7 +122,7 @@ public class AudioPlayer extends Activity {
 	@Override
 	public void onStop() {
 		super.onStop();
-		Log.i("AudioPlayer", "onStop() called");
+//		Log.i("AudioPlayer", "onStop() called");
 		//this.finish();
 //		if (mediaPlayer != null) {
 //			if (mediaPlayer.isPlaying()) {
