@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -263,28 +265,49 @@ public class Urecord extends Activity {
 			String _id = textView.getText().toString();
 			String path = null;
 			long id = info.id;
-
 			path = filesMap.get((int) id);
 
-			File file = new File(path);
-			boolean deleted = file.delete();
-			if (deleted) {
-				db.open();
-				db.deleteEntry(_id);
-				db.close();
-				updateListView();
-				Toast.makeText(getApplicationContext(), path + " deleted",
-						Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(getApplicationContext(), "Delete failed",
-						Toast.LENGTH_SHORT).show();
-			}
-
+			confirmDelete(path);
+			
 			return true;
 
 		default:
 			return super.onContextItemSelected(item);
 		}
+	}
+	
+	public void confirmDelete(final String path) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Delete " + path + "?")
+				.setCancelable(false)
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								
+								File file = new File(path);
+								boolean deleted = file.delete();
+								if (deleted) {
+									db.open();
+									db.deleteEntryByPath(path);
+									db.close();
+									updateListView();
+									Toast.makeText(getApplicationContext(),
+											path + " deleted",
+											Toast.LENGTH_SHORT).show();
+								} else {
+									Toast.makeText(getApplicationContext(),
+											"Delete failed", Toast.LENGTH_SHORT)
+											.show();
+								}
+							}
+						})
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
 
 	public void startRecording() {

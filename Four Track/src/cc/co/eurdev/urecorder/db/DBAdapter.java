@@ -64,6 +64,10 @@ public class DBAdapter {
             return db.delete(DATABASE_TABLE, KEY_ROW_ID + "=" + id, null) > 0;
     }
     
+    public boolean deleteEntryByPath(String path) {
+    	return db.delete(DATABASE_TABLE, COL_PATH + "=" + "'" + path + "'", null) > 0;
+    }
+    
     public void deleteAll() {
     	db.delete(DATABASE_TABLE, null, null);
     }
