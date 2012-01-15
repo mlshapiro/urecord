@@ -72,6 +72,15 @@ public class DBAdapter {
     	db.delete(DATABASE_TABLE, null, null);
     }
     
+    public boolean entryInDb(String path) {
+    	Cursor cursor = db.query(DATABASE_TABLE, new String[] { COL_PATH }, COL_PATH + "=" + "'" + path + "'", null, null, null, null);
+        if (cursor.moveToFirst()) {
+            return true;
+        } else {
+        	return false;
+        }
+    }
+    
     // get all "expenses" entries
 //  public Cursor getExpenseEntries() {
 //          String query = "SELECT _id, name, amount, date " +

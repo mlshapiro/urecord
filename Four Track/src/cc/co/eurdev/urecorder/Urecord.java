@@ -3,11 +3,13 @@ package cc.co.eurdev.urecorder;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,8 +87,7 @@ public class Urecord extends Activity {
 			});
 
 	SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss aa");
-	SimpleDateFormat fileNameDateFormatter = new SimpleDateFormat(
-			"yyyy-MM-dd.HH.mm.ss");
+	SimpleDateFormat fileNameDateFormatter = new SimpleDateFormat("yyyy-MM-dd.HH.mm.ss");
 	String trackPath;
 	boolean sdIsMounted;
 	LinearLayout layout;
@@ -363,11 +364,24 @@ public class Urecord extends Activity {
 		ar.release();
 		Toast.makeText(Urecord.this, "stopped", Toast.LENGTH_LONG).show();
 
+		String length = getDuration(fullPath);
+
+//		Log.v("from DB", fullPath);
+		// add to database
+		db.open();
+		db.addEntry(timeStamp, "empty", date, time, length, fullPath);
+		db.close();
+		updateListView();
+		updateFreeSpace();
+//		Log.i("stopRecording", "end of stopRecording() reached");
+	}
+	
+	public String getDuration(String path) {
 		long millis = 0;
 		MediaPlayer mediaPlayer = new MediaPlayer();
 		try {
 			mediaPlayer.reset();
-			mediaPlayer.setDataSource(fullPath);
+			mediaPlayer.setDataSource(path);
 			mediaPlayer.prepare();
 			millis = mediaPlayer.getDuration();
 		} catch (IOException e) {
@@ -380,15 +394,8 @@ public class Urecord extends Activity {
 		int minutes = (int) ((millis / (1000 * 60)) % 60);
 
 		String length = minutes + " min, " + seconds + " sec";
-
-//		Log.v("from DB", fullPath);
-		// add to database
-		db.open();
-		db.addEntry(timeStamp, "empty", date, time, length, fullPath);
-		db.close();
-		updateListView();
-		updateFreeSpace();
-//		Log.i("stopRecording", "end of stopRecording() reached");
+		
+		return length;
 	}
 
 	public void syncDatabaseWithFileSystem() {
@@ -432,9 +439,54 @@ public class Urecord extends Activity {
 
 				} while (c.moveToNext());
 			}
+			
+			
+			//if a Urecord file is not in the database, add it
+			for (int i = 0; i < files.length; i++) {
+				//Log.i("Urecord file found", files[i]);
+				//Log.i("entryInDb", db.entryInDb(files[i]) ? "true" : "false");
+				if (!db.entryInDb(files[i])) {
+					addFileToDb(files[i]);
+				}
+			}
 			db.close();
 
 		}
+	}
+	
+	public void addFileToDb(String path) {
+		Log.w("db add", path);
+		
+		
+		String fileName = path.substring(path.length()-23, path.length()-4);
+		//Log.w("fileName", fileName);
+    	//StringTokenizer tokens = new StringTokenizer(fileName, "-.");
+		long calculatedTimeStamp = 0;
+		String calculatedTimeStampString = "";
+		try {
+		    Date date = fileNameDateFormatter.parse(fileName);
+		    calculatedTimeStamp = date.getTime();
+		    calculatedTimeStampString = Long.toString(calculatedTimeStamp);
+		} catch (ParseException e) {
+		    Log.e("log", e.getMessage(), e);
+		}
+		
+		//Log.w("timeStamp", calculatedTimeStampString);
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(calculatedTimeStamp);
+
+		int day = calendar.get(Calendar.DAY_OF_MONTH);
+		int month = calendar.get(Calendar.MONTH) + 1;
+		int year = calendar.get(Calendar.YEAR);
+
+		String calculatedDate = monthMap.get(month) + " " + day + ", " + year;
+		
+		// time = hour + ":" + minute + ":" + second;
+		String calculatedTime = dateFormatter.format(calendar.getTime());
+    	String calculatedLength = getDuration(path);
+    	
+		db.addEntry(calculatedTimeStampString, "empty", calculatedDate, calculatedTime, calculatedLength, path);
 	}
 
 	public void showAudioPlayer(String fullPath) {
