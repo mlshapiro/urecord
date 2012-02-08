@@ -16,6 +16,7 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.text.Selection;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -39,6 +41,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SeekBar;
@@ -52,10 +55,7 @@ import cc.co.eurdev.urecorder.db.DBAdapter;
 public class Urecord extends Activity {
 	/** Called when the activity is first created. */
 
-	private DBAdapter db = new DBAdapter(this);
-
-	String[] from = new String[] { "TimeStamp", "Date", "Length", "Time" };
-	int[] to;
+	private static final int PROPERTIES_DIALOG = 0;
 
 	private static final Map<Integer, String> monthMap = Collections
 			.unmodifiableMap(new HashMap<Integer, String>() {
@@ -86,6 +86,7 @@ public class Urecord extends Activity {
 				}
 			});
 
+	private DBAdapter db;
 	SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss aa");
 	SimpleDateFormat fileNameDateFormatter = new SimpleDateFormat("yyyy-MM-dd.HH.mm.ss");
 	String trackPath;
@@ -110,11 +111,16 @@ public class Urecord extends Activity {
 	String date;
 	String time;
 	String fullPath;
+	
+	String[] from = new String[] { "TimeStamp", "Date", "Length", "Time" };
+	int[] to;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		db = new DBAdapter(this);
 		
 		PackageManager pm = getPackageManager();
 		boolean isPhone = pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY);
@@ -257,24 +263,71 @@ public class Urecord extends Activity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		TextView textView = (TextView) info.targetView.findViewById(R.id.textTimeStamp);
+		String _id = textView.getText().toString();
+		String path = null;
+		long id = info.id;
+		path = filesMap.get((int) id);
+		
 		switch (item.getItemId()) {
 		case R.id.itemDelete:
-			TextView textView = (TextView) info.targetView
-					.findViewById(R.id.textTimeStamp);
-			String _id = textView.getText().toString();
-			String path = null;
-			long id = info.id;
-			path = filesMap.get((int) id);
-
 			confirmDelete(path);
+			return true;
 			
+		case R.id.itemProperties:
+			Bundle args = new Bundle();
+	        args.putString("path", path);
+			showDialog(PROPERTIES_DIALOG, args);	
 			return true;
 
 		default:
 			return super.onContextItemSelected(item);
 		}
+	}
+	
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
+		switch(id) {
+	    case PROPERTIES_DIALOG:
+	    	String pathString = args.getString("path");
+	    	EditText pathText = (EditText) dialog.findViewById(R.id.editPath);
+			Dialog dialog2 = propertiesDialog(pathString);
+			dialog2 = null;
+	    	break;
+		}
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id, Bundle args) {
+	    Dialog dialog;
+	    switch(id) {
+	    case PROPERTIES_DIALOG:
+	    	//Context mContext = getApplicationContext();
+	    	String pathString = args.getString("path");
+			dialog = propertiesDialog(pathString);
+	        break;
+	    default:
+	        dialog = null;
+	    }
+	    return dialog;
+	}
+	
+	
+	public Dialog propertiesDialog(String path) {
+		Dialog dialog = new Dialog(this);
+		
+		dialog.setContentView(R.layout.properties);
+		dialog.setTitle("File Properties");
+		
+		EditText pathText = (EditText) dialog.findViewById(R.id.editPath);
+		TextView sampleRateTextView = (TextView)dialog.findViewById(R.id.textSampleRate); 
+		TextView typeTextView = (TextView)dialog.findViewById(R.id.textFileType);
+		
+		
+		pathText.setText(path);
+		Selection.setSelection(pathText.getText(), pathText.length());
+		return dialog;
 	}
 	
 	public void confirmDelete(final String path) {
@@ -542,8 +595,7 @@ public class Urecord extends Activity {
 			// double gigaAvailable = sdAvailSize / 1073741824;
 			double mbAvailable = availableSize / 1048576;
 
-			freeSpaceView.setText("There is " + (int) mbAvailable
-					+ "MB of space left.");
+			freeSpaceView.setText((int) mbAvailable + "MB free");
 		}
 	}
 }
