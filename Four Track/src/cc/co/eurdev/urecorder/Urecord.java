@@ -41,6 +41,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -292,42 +293,69 @@ public class Urecord extends Activity {
 	    case PROPERTIES_DIALOG:
 	    	String pathString = args.getString("path");
 	    	EditText pathText = (EditText) dialog.findViewById(R.id.editPath);
-			Dialog dialog2 = propertiesDialog(pathString);
-			dialog2 = null;
+			TextView bitRateTextView = (TextView)dialog.findViewById(R.id.textBitRate); 
+			TextView typeTextView = (TextView)dialog.findViewById(R.id.textFileType);
+			Button dismissButton = (Button)dialog.findViewById(R.id.buttonDismiss);
+			long millis = getDuration(pathString);
+			int seconds = (int) (millis / 1000);
+			
+			File file = new File(pathString);
+			long bitLength = file.length() * 8;
+			int bitrate = (int) (bitLength / seconds);
+			int kBitrate = bitrate / 1000;
+			
+			
+			pathText.setText(pathString);
+			Selection.setSelection(pathText.getText(), pathText.length());
+			
+			bitRateTextView.setText(Integer.toString(kBitrate)+ "kbps");
 	    	break;
 		}
 	}
 	
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle args) {
-	    Dialog dialog;
+	    final Dialog dialog;
 	    switch(id) {
 	    case PROPERTIES_DIALOG:
 	    	//Context mContext = getApplicationContext();
-	    	String pathString = args.getString("path");
-			dialog = propertiesDialog(pathString);
+	    	String path = args.getString("path");
+			//dialog = propertiesDialog(pathString);
+			dialog = new Dialog(this);
+			
+			dialog.setContentView(R.layout.properties);
+			dialog.setTitle("File Properties");
+			
+			EditText pathText = (EditText) dialog.findViewById(R.id.editPath);
+			TextView bitRateTextView = (TextView)dialog.findViewById(R.id.textBitRate); 
+			TextView typeTextView = (TextView)dialog.findViewById(R.id.textFileType);
+			Button dismissButton = (Button)dialog.findViewById(R.id.buttonDismiss); 
+			
+			dismissButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					dialog.dismiss();
+				}
+			});
+			
+			long millis = getDuration(path);
+			int seconds = (int) (millis / 1000);
+			
+			File file = new File(path);
+			long bitLength = file.length() * 8;
+			int bitrate = (int) (bitLength / seconds);
+			int kBitrate = bitrate / 1000;
+			
+			pathText.setText(path);
+			Selection.setSelection(pathText.getText(), pathText.length());
+			
+			bitRateTextView.setText(Integer.toString(kBitrate));
 	        break;
 	    default:
 	        dialog = null;
 	    }
 	    return dialog;
-	}
-	
-	
-	public Dialog propertiesDialog(String path) {
-		Dialog dialog = new Dialog(this);
-		
-		dialog.setContentView(R.layout.properties);
-		dialog.setTitle("File Properties");
-		
-		EditText pathText = (EditText) dialog.findViewById(R.id.editPath);
-		TextView sampleRateTextView = (TextView)dialog.findViewById(R.id.textSampleRate); 
-		TextView typeTextView = (TextView)dialog.findViewById(R.id.textFileType);
-		
-		
-		pathText.setText(path);
-		Selection.setSelection(pathText.getText(), pathText.length());
-		return dialog;
 	}
 	
 	public void confirmDelete(final String path) {
@@ -417,7 +445,7 @@ public class Urecord extends Activity {
 		ar.release();
 		Toast.makeText(Urecord.this, "stopped", Toast.LENGTH_LONG).show();
 
-		String length = getDuration(fullPath);
+		String length = getAudioLength(fullPath);
 
 //		Log.v("from DB", fullPath);
 		// add to database
@@ -429,7 +457,18 @@ public class Urecord extends Activity {
 //		Log.i("stopRecording", "end of stopRecording() reached");
 	}
 	
-	public String getDuration(String path) {
+	public String getAudioLength(String path) {
+		long millis = getDuration(path);
+
+		int seconds = (int) (millis / 1000) % 60;
+		int minutes = (int) ((millis / (1000 * 60)) % 60);
+
+		String length = minutes + " min, " + seconds + " sec";
+		
+		return length;
+	}
+	
+	public long getDuration(String path){
 		long millis = 0;
 		MediaPlayer mediaPlayer = new MediaPlayer();
 		try {
@@ -443,12 +482,7 @@ public class Urecord extends Activity {
 		mediaPlayer.stop();
 		mediaPlayer.release();
 
-		int seconds = (int) (millis / 1000) % 60;
-		int minutes = (int) ((millis / (1000 * 60)) % 60);
-
-		String length = minutes + " min, " + seconds + " sec";
-		
-		return length;
+		return millis;
 	}
 
 	public void syncDatabaseWithFileSystem() {
@@ -537,7 +571,7 @@ public class Urecord extends Activity {
 		
 		// time = hour + ":" + minute + ":" + second;
 		String calculatedTime = dateFormatter.format(calendar.getTime());
-    	String calculatedLength = getDuration(path);
+    	String calculatedLength = getAudioLength(path);
     	
 		db.addEntry(calculatedTimeStampString, "empty", calculatedDate, calculatedTime, calculatedLength, path);
 	}

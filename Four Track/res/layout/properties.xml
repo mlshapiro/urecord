@@ -41,19 +41,19 @@
         android:layout_margin="5dip" >
 
         <TextView
-            android:id="@+id/labelSampleRate"
+            android:id="@+id/labelBitRate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sample Rate"
+            android:text="Bit Rate"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
-            android:id="@+id/textSampleRate"
+            android:id="@+id/textBitRate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="5dip"
-            android:text="Sample Rate"
+            android:text="Bit Rate"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </LinearLayout>
@@ -82,5 +82,14 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonDismiss"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="5dip"
+        android:layout_marginTop="5dip"
+        android:text="Dismiss" />
 
 </LinearLayout>
