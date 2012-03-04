@@ -38,6 +38,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
@@ -292,23 +293,12 @@ public class Urecord extends Activity {
 		switch(id) {
 	    case PROPERTIES_DIALOG:
 	    	String pathString = args.getString("path");
-	    	EditText pathText = (EditText) dialog.findViewById(R.id.editPath);
-			TextView bitRateTextView = (TextView)dialog.findViewById(R.id.textBitRate); 
-			TextView typeTextView = (TextView)dialog.findViewById(R.id.textFileType);
+	    	EditText pathText = (EditText) dialog.findViewById(R.id.editPath); 
 			Button dismissButton = (Button)dialog.findViewById(R.id.buttonDismiss);
-			long millis = getDuration(pathString);
-			int seconds = (int) (millis / 1000);
-			
-			File file = new File(pathString);
-			long bitLength = file.length() * 8;
-			int bitrate = (int) (bitLength / seconds);
-			int kBitrate = bitrate / 1000;
-			
-			
+
 			pathText.setText(pathString);
 			Selection.setSelection(pathText.getText(), pathText.length());
 			
-			bitRateTextView.setText(Integer.toString(kBitrate)+ "kbps");
 	    	break;
 		}
 	}
@@ -326,10 +316,10 @@ public class Urecord extends Activity {
 			dialog.setContentView(R.layout.properties);
 			dialog.setTitle("File Properties");
 			
-			EditText pathText = (EditText) dialog.findViewById(R.id.editPath);
-			TextView bitRateTextView = (TextView)dialog.findViewById(R.id.textBitRate); 
-			TextView typeTextView = (TextView)dialog.findViewById(R.id.textFileType);
+			EditText pathText = (EditText) dialog.findViewById(R.id.editPath); 
 			Button dismissButton = (Button)dialog.findViewById(R.id.buttonDismiss); 
+			
+			dialog.getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
 			
 			dismissButton.setOnClickListener(new OnClickListener() {
 				
@@ -339,18 +329,17 @@ public class Urecord extends Activity {
 				}
 			});
 			
-			long millis = getDuration(path);
-			int seconds = (int) (millis / 1000);
-			
-			File file = new File(path);
-			long bitLength = file.length() * 8;
-			int bitrate = (int) (bitLength / seconds);
-			int kBitrate = bitrate / 1000;
+//			long millis = getDuration(path);
+//			int seconds = (int) (millis / 1000);
+//			
+//			File file = new File(path);
+//			long bitLength = file.length() * 8;
+//			int bitrate = (int) (bitLength / seconds);
+//			int kBitrate = bitrate / 1000;
 			
 			pathText.setText(path);
 			Selection.setSelection(pathText.getText(), pathText.length());
 			
-			bitRateTextView.setText(Integer.toString(kBitrate));
 	        break;
 	    default:
 	        dialog = null;
