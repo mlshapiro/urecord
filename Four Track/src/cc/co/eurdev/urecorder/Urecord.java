@@ -39,6 +39,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
@@ -122,6 +123,8 @@ public class Urecord extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		
 		db = new DBAdapter(this);
 		
 		PackageManager pm = getPackageManager();
@@ -199,6 +202,7 @@ public class Urecord extends Activity {
 			telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
 			telephonyManager.listen(callEventListener, PhoneStateListener.LISTEN_CALL_STATE);
 		}
+
 		syncDatabaseWithFileSystem();
 		updateListView();
 		updateFreeSpace();
@@ -209,9 +213,6 @@ public class Urecord extends Activity {
 	public void onStart() {
 		super.onStart();
 		// Log.i("onStart", "onStart() called");
-//		syncDatabaseWithFileSystem();
-//		updateListView();
-//		updateFreeSpace();
 
 	}
 
@@ -225,7 +226,7 @@ public class Urecord extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		// Log.i("onResume", "onResume() called");
+//		Log.i("Urecord", "onResume() called");
 
 	}
 
